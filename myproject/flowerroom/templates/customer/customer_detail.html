@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль покупателя {{ customer.first_name }} {{ customer.last_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-card {
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #20c997;
+        }
+        .profile-header {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card profile-card mb-4">
+                    <div class="card-header profile-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-0">{{ customer.first_name }} {{ customer.last_name }}</h1>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="mb-3">
+                                    <span class="detail-label">Email:</span><br>
+                                    <a href="mailto:{{ customer.user.email }}">{{ customer.user.email }}</a>
+                                </p>
+                                
+                                <p class="mb-3">
+                                    <span class="detail-label">Телефон:</span><br>
+                                    {{ customer.phone|default:"Не указан" }}
+                                </p>
+
+                                <p class="mb-3">
+                                    <span class="detail-label">Имя пользователя:</span><br>
+                                    {{ customer.user.username }}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 120px; height: 120px; margin: 0 auto; font-size: 3rem;">
+                                    {{ customer.first_name|first|upper }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Заказы покупателя -->
+                        <div class="mt-4">
+                            <h4 class="mb-3">Заказы покупателя</h4>
+                            {% if customer.order_set.all %}
+                            <div class="list-group">
+                                {% for order in customer.order_set.all %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Заказ #{{ order.id }}</h6>
+                                            <small class="text-muted">{{ order.order_date|date:"d.m.Y H:i" }}</small>
+                                        </div>
+                                        <div>
+                                            <span class="badge {% if order.status == 'Delivered' %}bg-success
+                                                             {% elif order.status == 'Cancelled' %}bg-danger
+                                                             {% else %}bg-warning text-dark{% endif %}">
+                                                {{ order.get_status_display }}
+                                            </span>
+                                            <span class="ms-2">{{ order.total_amount }} ₽</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted">У покупателя пока нет заказов</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Вернуться к списку
+                        </a>
+                        <div>
+                            <a href="{% url 'customer_update' customer.pk %}" class="btn btn-primary me-2">
+                                <i class="bi bi-pencil"></i> Редактировать
+                            </a>
+                            <a href="{% url 'customer_delete' customer.pk %}" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

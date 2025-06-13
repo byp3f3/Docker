@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ plant.product.name }} - Детали растения</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .plant-card {
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #198754;
+        }
+        .plant-header {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+        .plant-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card plant-card mb-4">
+                    <div class="card-header plant-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-0">{{ plant.product.name }}</h1>
+                            <span class="badge {% if plant.product.stock_quantity > 10 %}bg-success
+                                             {% elif plant.product.stock_quantity > 0 %}bg-warning text-dark
+                                             {% else %}bg-danger{% endif %}">
+                                На складе: {{ plant.product.stock_quantity }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                {% if plant.product.image %}
+                                <img src="{{ plant.product.image.url }}" alt="{{ plant.product.name }}" class="plant-image mb-3">
+                                {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center mb-3" 
+                                     style="height: 200px;">
+                                    <i class="bi bi-flower1 text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-3">
+                                    <span class="detail-label">Тип растения:</span><br>
+                                    {{ plant.plant_type.name }}
+                                </p>
+                                
+                                {% if plant.scientific_name %}
+                                <p class="mb-3">
+                                    <span class="detail-label">Научное название:</span><br>
+                                    <em>{{ plant.scientific_name }}</em>
+                                </p>
+                                {% endif %}
+
+                                <p class="mb-3">
+                                    <span class="detail-label">Цена:</span><br>
+                                    <span class="h4 text-primary">{{ plant.product.price }} ₽</span>
+                                </p>
+
+                                {% if plant.product.description %}
+                                <p class="mb-3">
+                                    <span class="detail-label">Описание:</span><br>
+                                    {{ plant.product.description }}
+                                </p>
+                                {% endif %}
+
+                                <p class="mb-3">
+                                    <span class="detail-label">Характеристики:</span><br>
+                                    {% for attribute in plant.attributes.all %}
+                                    <span class="badge bg-info me-1">{{ attribute.name }}</span>
+                                    {% empty %}
+                                    <span class="text-muted">Нет характеристик</span>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Отзывы о растении -->
+                        <div class="mt-4">
+                            <h4 class="mb-3">Отзывы</h4>
+                            {% if plant.product.review_set.all %}
+                            <div class="list-group">
+                                {% for review in plant.product.review_set.all %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <strong>{{ review.customer.first_name }} {{ review.customer.last_name }}</strong>
+                                            <small class="text-muted ms-2">{{ review.review_date|date:"d.m.Y" }}</small>
+                                        </div>
+                                        <div class="text-warning">
+                                            {% for i in "12345"|make_list %}
+                                            <i class="bi bi-star{% if forloop.counter <= review.rating %}-fill{% endif %}"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% if review.comment %}
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted">Пока нет отзывов</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="{% url 'plant_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Вернуться к списку
+                        </a>
+                        <div>
+                            <a href="{% url 'plant_update' plant.pk %}" class="btn btn-primary me-2">
+                                <i class="bi bi-pencil"></i> Редактировать
+                            </a>
+                            <a href="{% url 'plant_delete' plant.pk %}" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

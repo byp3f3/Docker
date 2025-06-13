@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление растениями</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .plant-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #198754;
+        }
+        .plant-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .plant-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-4">Растения</h1>
+            <a href="{% url 'plant_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Добавить растение
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <div class="row">
+                            <div class="col-md-1"><strong>Фото</strong></div>
+                            <div class="col-md-3"><strong>Название</strong></div>
+                            <div class="col-md-2"><strong>Тип</strong></div>
+                            <div class="col-md-2"><strong>Научное название</strong></div>
+                            <div class="col-md-2"><strong>Цена</strong></div>
+                            <div class="col-md-2 text-end"><strong>Действия</strong></div>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for plant in plants %}
+                        <div class="list-group-item plant-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-1">
+                                    {% if plant.product.image %}
+                                    <img src="{{ plant.product.image.url }}" alt="{{ plant.product.name }}" class="plant-image">
+                                    {% else %}
+                                    <div class="plant-image bg-light d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-flower1 text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>{{ plant.product.name }}</strong>
+                                    {% if plant.product.description %}
+                                    <div class="text-muted small">{{ plant.product.description|truncatechars:50 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2">{{ plant.plant_type.name }}</div>
+                                <div class="col-md-2">
+                                    {% if plant.scientific_name %}
+                                    <em>{{ plant.scientific_name }}</em>
+                                    {% else %}
+                                    <span class="text-muted">Не указано</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2">{{ plant.product.price }} ₽</div>
+                                <div class="col-md-2 text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'plant_detail' plant.pk %}" class="btn btn-outline-info" title="Просмотр">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{% url 'plant_update' plant.pk %}" class="btn btn-outline-secondary" title="Редактировать">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'plant_delete' plant.pk %}" class="btn btn-outline-danger" title="Удалить">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item text-center py-4 text-muted">
+                            Растения не найдены
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

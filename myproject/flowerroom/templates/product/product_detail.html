@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Детали товара</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card {
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #0d6efd;
+        }
+        .product-header {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+        .product-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card product-card mb-4">
+                    <div class="card-header product-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-0">{{ product.name }}</h1>
+                            <span class="badge {% if product.stock_quantity > 10 %}bg-success
+                                             {% elif product.stock_quantity > 0 %}bg-warning text-dark
+                                             {% else %}bg-danger{% endif %}">
+                                На складе: {{ product.stock_quantity }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image mb-3">
+                                {% else %}
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center mb-3" 
+                                     style="height: 200px;">
+                                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-3">
+                                    <span class="detail-label">Категория:</span><br>
+                                    {{ product.category.name }}
+                                </p>
+                                
+                                <p class="mb-3">
+                                    <span class="detail-label">Цена:</span><br>
+                                    <span class="h4 text-primary">{{ product.price }} ₽</span>
+                                </p>
+
+                                {% if product.description %}
+                                <p class="mb-3">
+                                    <span class="detail-label">Описание:</span><br>
+                                    {{ product.description }}
+                                </p>
+                                {% endif %}
+
+                                <p class="mb-3">
+                                    <span class="detail-label">Поставщики:</span><br>
+                                    {% for supplier in product.suppliers.all %}
+                                    <span class="badge bg-secondary me-1">{{ supplier.name }}</span>
+                                    {% empty %}
+                                    <span class="text-muted">Нет поставщиков</span>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Если это растение, показываем дополнительную информацию -->
+                        {% if product.plant %}
+                        <div class="mt-4">
+                            <h4 class="mb-3">Информация о растении</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-3">
+                                        <span class="detail-label">Тип растения:</span><br>
+                                        {{ product.plant.plant_type.name }}
+                                    </p>
+                                    
+                                    {% if product.plant.scientific_name %}
+                                    <p class="mb-3">
+                                        <span class="detail-label">Научное название:</span><br>
+                                        <em>{{ product.plant.scientific_name }}</em>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-3">
+                                        <span class="detail-label">Характеристики:</span><br>
+                                        {% for attribute in product.plant.attributes.all %}
+                                        <span class="badge bg-info me-1">{{ attribute.name }}</span>
+                                        {% empty %}
+                                        <span class="text-muted">Нет характеристик</span>
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Отзывы о товаре -->
+                        <div class="mt-4">
+                            <h4 class="mb-3">Отзывы</h4>
+                            {% if product.review_set.all %}
+                            <div class="list-group">
+                                {% for review in product.review_set.all %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <strong>{{ review.customer.first_name }} {{ review.customer.last_name }}</strong>
+                                            <small class="text-muted ms-2">{{ review.review_date|date:"d.m.Y" }}</small>
+                                        </div>
+                                        <div class="text-warning">
+                                            {% for i in "12345"|make_list %}
+                                            <i class="bi bi-star{% if forloop.counter <= review.rating %}-fill{% endif %}"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% if review.comment %}
+                                    <p class="mb-0">{{ review.comment }}</p>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p class="text-muted">Пока нет отзывов</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between">
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Вернуться к списку
+                        </a>
+                        <div>
+                            <a href="{% url 'product_update' product.pk %}" class="btn btn-primary me-2">
+                                <i class="bi bi-pencil"></i> Редактировать
+                            </a>
+                            <a href="{% url 'product_delete' product.pk %}" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

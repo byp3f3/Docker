@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали сертификата</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .certificate-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .certificate-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        .status-used { background-color: #dc3545; color: white; }
+        .status-unused { background-color: #28a745; color: white; }
+        .certificate-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .certificate-code {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            word-break: break-all;
+            white-space: pre-wrap;
+            display: inline-block;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .certificate-date {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .certificate-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="h4 mb-0">Сертификат #{{ certificate.id }}</h1>
+                            <span class="certificate-status status-{% if certificate.is_used %}used{% else %}unused{% endif %}">
+                                {% if certificate.is_used %}Использован{% else %}Активен{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="certificate-info mb-4">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <span class="certificate-label">
+                                        <strong>Код сертификата:</strong>
+                                    </span>
+                                    <span class="certificate-code">{{ certificate.code }}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="certificate-label">
+                                        <strong>Сумма:</strong>
+                                    </span>
+                                    <span class="certificate-amount">{{ certificate.amount }} ₽</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <p class="certificate-date mb-2">
+                                        <i class="bi bi-calendar"></i> Создан: {{ certificate.created_at|date:"d.m.Y H:i" }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if certificate.expiry_date %}
+                                    <p class="certificate-date mb-2">
+                                        <i class="bi bi-clock"></i> Срок действия до: {{ certificate.expiry_date|date:"d.m.Y" }}
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if certificate.is_used %}
+                            <div class="alert alert-info">
+                                <h5 class="alert-heading">Информация об использовании</h5>
+                                <p class="mb-1">
+                                    <strong>Использован покупателем:</strong><br>
+                                    {{ certificate.used_by }}
+                                </p>
+                                {% if certificate.used_date %}
+                                <p class="mb-0">
+                                    <strong>Дата использования:</strong><br>
+                                    {{ certificate.used_date|date:"d.m.Y H:i" }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'certificate_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> К списку сертификатов
+                            </a>
+                            <div>
+                                <a href="{% url 'certificate_update' certificate.pk %}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i> Редактировать
+                                </a>
+                                <a href="{% url 'certificate_delete' certificate.pk %}" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Удалить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

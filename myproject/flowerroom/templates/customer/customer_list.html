@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление покупателями</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .customer-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #20c997;
+        }
+        .customer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-4">Покупатели</h1>
+            <a href="{% url 'customer_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Добавить покупателя
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <div class="row">
+                            <div class="col-md-3"><strong>Имя</strong></div>
+                            <div class="col-md-3"><strong>Фамилия</strong></div>
+                            <div class="col-md-3"><strong>Телефон</strong></div>
+                            <div class="col-md-3 text-end"><strong>Действия</strong></div>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        {% for customer in customers %}
+                        <div class="list-group-item customer-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <strong>{{ customer.first_name }}</strong>
+                                </div>
+                                <div class="col-md-3">{{ customer.last_name }}</div>
+                                <div class="col-md-3">{{ customer.phone|default:"Не указан" }}</div>
+                                <div class="col-md-3 text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'customer_detail' customer.pk %}" class="btn btn-outline-info" title="Просмотр">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{% url 'customer_update' customer.pk %}" class="btn btn-outline-secondary" title="Редактировать">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'customer_delete' customer.pk %}" class="btn btn-outline-danger" title="Удалить">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item text-center py-4 text-muted">
+                            Покупатели не найдены
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

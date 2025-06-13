@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заказы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .order-card {
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        .status-pending { background-color: #ffc107; color: black; }
+        .status-processing { background-color: #17a2b8; color: white; }
+        .status-shipped { background-color: #007bff; color: white; }
+        .status-delivered { background-color: #28a745; color: white; }
+        .status-cancelled { background-color: #dc3545; color: white; }
+        .status-new { background-color: #17a2b8; color: white; }
+        .order-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .order-date {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .customer-info {
+            font-size: 0.9rem;
+        }
+        .address-info {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Заказы</h1>
+            <a href="{% url 'order_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Новый заказ
+            </a>
+        </div>
+
+        {% if orders %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for order in orders %}
+            <div class="col">
+                <div class="card order-card">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Заказ #{{ order.id }}</h5>
+                            <span class="order-status status-{{ order.status|lower }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="customer-info mb-3">
+                            <strong>Покупатель:</strong><br>
+                            {{ order.customer }}
+                        </div>
+
+                        <div class="address-info mb-3">
+                            <strong>Адрес доставки:</strong><br>
+                            {{ order.address }}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="order-date">
+                                <i class="bi bi-calendar"></i> {{ order.order_date|date:"d.m.Y H:i" }}
+                            </div>
+                            <div class="order-amount">
+                                {{ order.total_amount }} ₽
+                            </div>
+                        </div>
+
+                        {% if order.certificate %}
+                        <div class="alert alert-info mb-3">
+                            <small>
+                                <i class="bi bi-ticket-perforated"></i>
+                                Использован сертификат на сумму {{ order.certificate.amount }} ₽
+                            </small>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'order_detail' order.pk %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye"></i> Просмотр
+                            </a>
+                            <div>
+                                <a href="{% url 'order_update' order.pk %}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i> Изменить
+                                </a>
+                                <a href="{% url 'order_delete' order.pk %}" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Удалить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Заказы пока не созданы.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
