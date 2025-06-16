@@ -1,0 +1,69 @@
+<style>
+    :root {
+        --primary-color: #2e7d32;
+        --primary-hover: #1b5e20;
+    }
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1466781783364-36c955e42a7f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+        background-size: cover;
+        background-position: center;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    .product-card {
+        transition: transform 0.3s;
+        height: 100%;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    .card-img-top {
+        height: 250px;
+        object-fit: cover;
+    }
+    .footer {
+        background-color: #1b5e20;
+        color: white;
+        padding: 40px 0;
+    }
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+    .navbar-brand {
+        color: var(--primary-color) !important;
+    }
+</style>
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>О нас</h5>
+                <p>FlowerRoom - ваш источник красивых комнатных растений и профессиональных советов по уходу за ними.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Быстрые ссылки</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Каталог</a></li>
+                    <li><a href="{% url 'info' %}" class="text-white">О нас</a></li>
+                    <li><a href="{% url 'info' %}" class="text-white">Главная</a></li>
+                    <li><a href="#" class="text-white">Корзина</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Контакты</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-phone"></i> +7 (999) 123-45-67</li>
+                    <li><i class="fas fa-envelope"></i> info@flowerroom.ru</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ул. Цветочная, 123, Москва</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
