@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title_name %}Панель администратора - FlowerRoom{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-cog"></i> Панель администратора</h3>
+                    <p class="mb-0">Добро пожаловать, {{ customer.first_name }} {{ customer.last_name }}!</p>
+                </div>
+                <div class="card-body">
+                    <!-- Статистика -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_users }}</h4>
+                                    <p class="mb-0">Пользователей</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_products }}</h4>
+                                    <p class="mb-0">Товаров</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_orders }}</h4>
+                                    <p class="mb-0">Заказов</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_customers }}</h4>
+                                    <p class="mb-0">Покупателей</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Быстрые действия -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Управление пользователями</h5>
+                            <div class="list-group">
+                                <a href="{% url 'user_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-users"></i> Список пользователей
+                                </a>
+                                <a href="{% url 'user_create' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-user-plus"></i> Добавить пользователя
+                                </a>
+                                <a href="{% url 'customer_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-user-friends"></i> Список покупателей
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Управление товарами</h5>
+                            <div class="list-group">
+                                <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-box"></i> Список товаров
+                                </a>
+                                <a href="{% url 'product_create' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-plus"></i> Добавить товар
+                                </a>
+                                <a href="{% url 'plant_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-seedling"></i> Список растений
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Управление заказами</h5>
+                            <div class="list-group">
+                                <a href="{% url 'order_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-shopping-cart"></i> Список заказов
+                                </a>
+                                <a href="{% url 'order_create' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-plus"></i> Создать заказ
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Дополнительно</h5>
+                            <div class="list-group">
+                                <a href="{% url 'review_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-star"></i> Отзывы
+                                </a>
+                                <a href="{% url 'certificate_list' %}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-certificate"></i> Сертификаты
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-5"></div>
+{% endblock %} 

@@ -5,6 +5,19 @@ urlpatterns = [
     path('', info_view, name='info'),
     path('info', info_view, name='info'),
     
+    # Аутентификация
+    path('register/', register_view, name='register'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('profile/', profile_view, name='profile'),
+    path('profile/edit/', profile_edit_view, name='profile_edit'),
+    path('admin-panel/', admin_panel_view, name='admin_panel'),
+    
+    # Каталог для покупателей
+    path('catalog/', catalog_view, name='catalog'),
+    path('product/product_details/<int:product_id>/', product_detail_view, name='product_details'),
+    
+    
     path('users/', UserListView.as_view(), name='user_list'),
     path('users/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
     path('users/create/', UserCreateView.as_view(), name='user_create'),
@@ -47,4 +60,7 @@ urlpatterns = [
     path('certificates/<int:pk>/update/', CertificateUpdateView.as_view(), name='certificate_update'),
     path('certificates/<int:pk>/delete/', CertificateDeleteView.as_view(), name='certificate_delete'),
 
+    path('cart/add/', add_to_cart_view, name='add_to_cart'),
+    path('cart/', cart_view, name='cart'),
+    path('cart/update-quantity/', update_cart_item_quantity, name='update_cart_item_quantity'),
 ]

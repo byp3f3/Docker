@@ -3,11 +3,12 @@
 {% block title_name %}FlowerRoom - Магазин растений{% endblock %}
 
 {% block content %}
+<div class="page-wrapper">
     <section class="hero-section">
         <div class="container text-center">
             <h1 class="display-4">Добро пожаловать в FlowerRoom</h1>
             <p class="lead">Откройте для себя идеальные растения для вашего пространства</p>
-            <a href="#" class="btn btn-light btn-lg">Перейти в каталог</a>
+            <a href="{% url 'catalog' %}" class="btn btn-light btn-lg">Перейти в каталог</a>
         </div>
     </section>
 
@@ -15,43 +16,57 @@
         <div class="container">
             <h2 class="text-center mb-4">Популярные растения</h2>
             <div class="row">
-                <!-- Product 1 -->
+                {% for product in main_products %}
                 <div class="col-md-4 mb-4">
                     <div class="card product-card">
-                        <img src="https://images.unsplash.com/photo-1525498128493-380d1990a112?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Монстера">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% endif %}
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Монстера Деликатесная</h5>
-                            <p class="card-text">Красивое тропическое растение с характерными листьями</p>
-                            <p class="card-text mt-auto"><strong>3 499 ₽</strong></p>
-                            <a href="#" class="btn btn-primary">В корзину</a>
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                            <p class="card-text mt-auto"><strong>{{ product.price|floatformat:0 }} ₽</strong></p>
+                            <a href="{% url 'product_details' product.id %}" class="btn btn-outline-primary mb-2">Подробнее</a>
+                            {% if user.is_authenticated %}
+                            <form class="add-to-cart-form" data-product-id="{{ product.id }}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-shopping-cart"></i> В корзину
+                                </button>
+                            </form>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">
+                                <i class="fas fa-shopping-cart"></i> Войти, чтобы добавить в корзину
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                <!-- Product 2 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card">
-                        <img src="https://images.unsplash.com/photo-1509423350716-97f9360b4e09?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Фикус">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Фикус Лирата</h5>
-                            <p class="card-text">Элегантное комнатное дерево с крупными глянцевыми листьями</p>
-                            <p class="card-text mt-auto"><strong>4 999 ₽</strong></p>
-                            <a href="#" class="btn btn-primary">В корзину</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product 3 -->
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card">
-                        <img src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Сансевиерия">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Сансевиерия</h5>
-                            <p class="card-text">Неприхотливое растение, идеально подходит для начинающих</p>
-                            <p class="card-text mt-auto"><strong>1 999 ₽</strong></p>
-                            <a href="#" class="btn btn-primary">В корзину</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
+</div>
+    <script>
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch('{% url "add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `product_id=${productId}&quantity=1`
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            });
+        });
+    });
+    </script>
 {% endblock %}

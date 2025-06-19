@@ -1,24 +1,5 @@
 from django.db import models
-
-class User(models.Model):
-    ROLE_CHOICES = [
-        ('Admin', 'Администратор'),
-        ('Manager', 'Менеджер'),
-        ('Customer', 'Покупатель'),
-    ]
-
-    username = models.CharField(max_length=50, unique=True, verbose_name='Имя пользователя')
-    password = models.CharField(max_length=255, verbose_name='Пароль')
-    email = models.EmailField(unique=True, verbose_name='Email')
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, verbose_name='Роль')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-
-    class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-
-    def __str__(self):
-        return self.username
+from django.contrib.auth.models import User
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -199,5 +180,34 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Отзыв от {self.customer} на {self.product}"
+
+class Cart(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Покупатель', null=True, blank=True)
+    session_key = models.CharField(max_length=40, null=True, blank=True, verbose_name='Ключ сессии')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
+
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
+
+    def __str__(self):
+        if self.customer:
+            return f"Корзина {self.customer}"
+        return f"Корзина (сессия {self.session_key})"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, verbose_name='Корзина', related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    added_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
+
+    class Meta:
+        verbose_name = 'Позиция корзины'
+        verbose_name_plural = 'Позиции корзины'
+        unique_together = ('cart', 'product')
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
 
 

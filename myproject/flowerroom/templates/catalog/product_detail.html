@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title_name %}{{ product.name }} - FlowerRoom{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Хлебные крошки -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'info' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalog' %}">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalog' %}?category={{ product.category.id }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Изображение товара -->
+        <div class="col-lg-6 mb-4">
+            <div class="product-image-container">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% else %}
+                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <i class="fas fa-seedling text-muted" style="font-size: 5rem;"></i>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Информация о товаре -->
+        <div class="col-lg-6">
+            <div class="product-info">
+                <h1 class="display-5 mb-3">{{ product.name }}</h1>
+                <p class="text-muted mb-3">{{ product.category.name }}</p>
+                
+                <div class="price-section mb-4">
+                    <span class="display-6 text-primary fw-bold">{{ product.price }} ₽</span>
+                    {% if product.stock_quantity > 0 %}
+                        <span class="badge bg-success ms-2">В наличии ({{ product.stock_quantity }} шт.)</span>
+                    {% else %}
+                        <span class="badge bg-danger ms-2">Нет в наличии</span>
+                    {% endif %}
+                </div>
+
+                <div class="description mb-4">
+                    <h5>Описание</h5>
+                    <p>{{ product.description|linebreaks }}</p>
+                </div>
+
+                {% if plant %}
+                <div class="plant-info mb-4">
+                    <h5>Информация о растении</h5>
+                    <ul class="list-unstyled">
+                        {% if plant.scientific_name %}
+                            <li><strong>Научное название:</strong> {{ plant.scientific_name }}</li>
+                        {% endif %}
+                        <li><strong>Тип растения:</strong> {{ plant.plant_type.name }}</li>
+                        {% if plant.attributes.all %}
+                            <li><strong>Характеристики:</strong>
+                                {% for attr in plant.attributes.all %}
+                                    <span class="badge bg-light text-dark me-1">{{ attr.name }}</span>
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Кнопки действий -->
+                <div class="action-buttons mb-4">
+                    {% if user.is_authenticated %}
+                    <form class="add-to-cart-form" data-product-id="{{ product.id }}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-shopping-cart"></i> Добавить в корзину
+                        </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-shopping-cart"></i> Войти, чтобы добавить в корзину
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Дополнительная информация -->
+                <div class="additional-info">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-shipping-fast"></i> Быстрая доставка
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt"></i> Гарантия качества
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Отзывы -->
+    {% if reviews %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Отзывы покупателей</h3>
+            <div class="row">
+                {% for review in reviews %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-0">{{ review.customer.first_name }} {{ review.customer.last_name }}</h6>
+                                    <small class="text-muted">{{ review.review_date|date:"d.m.Y" }}</small>
+                                </div>
+                                <div class="rating">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if review.comment %}
+                                <p class="mb-0">{{ review.comment }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Похожие товары -->
+    {% if similar_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Похожие товары</h3>
+            <div class="row">
+                {% for similar_product in similar_products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card product-card h-100">
+                        {% if similar_product.image %}
+                            <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-seedling text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{{ similar_product.name }}</h6>
+                            <p class="card-text text-muted small">{{ similar_product.category.name }}</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="h6 text-primary mb-0">{{ similar_product.price }} ₽</span>
+                                    {% if similar_product.stock_quantity > 0 %}
+                                        <span class="badge bg-success small">В наличии</span>
+                                    {% else %}
+                                        <span class="badge bg-danger small">Нет в наличии</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'product_details' similar_product.id %}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fas fa-eye"></i> Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .product-image-container {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    .product-image-container img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #dee2e6;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    .rating {
+        font-size: 0.9rem;
+    }
+</style>
+
+<script>
+document.querySelectorAll('.add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const productId = this.getAttribute('data-product-id');
+        const csrfToken = this.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch('{% url "add_to_cart" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `product_id=${productId}&quantity=1`
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        });
+    });
+});
+</script>
+
+<div class="mb-5"></div>
+{% endblock %} 

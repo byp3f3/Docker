@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title_name %}Профиль - FlowerRoom{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Профиль пользователя</h3>
+                </div>
+                <div class="card-body">
+                    {% if customer %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Личная информация</h5>
+                                <p><strong>Имя:</strong> {{ customer.first_name }}</p>
+                                <p><strong>Фамилия:</strong> {{ customer.last_name }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                <p><strong>Телефон:</strong> {{ customer.phone|default:"Не указан" }}</p>
+                                <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+                                {% if is_admin %}
+                                    <p><strong>Роль:</strong> <span class="badge bg-success">Администратор</span></p>
+                                {% else %}
+                                    <p><strong>Роль:</strong> <span class="badge bg-primary">Пользователь</span></p>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Действия</h5>
+                                <div class="d-grid gap-2">
+                                    {% if is_admin %}
+                                        <a href="{% url 'admin_panel' %}" class="btn btn-success">
+                                            <i class="fas fa-cog"></i> Панель администратора
+                                        </a>
+                                    {% endif %}
+                                    <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Редактировать профиль
+                                    </a>
+                                    <a href="#" class="btn btn-info">
+                                        <i class="fas fa-shopping-bag"></i> Мои заказы
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <h5>Профиль не найден</h5>
+                            <p>Ваш профиль покупателя не был создан. Обратитесь к администратору.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-5"></div>
+{% endblock %} 

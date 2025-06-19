@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-wrapper">
+<div class="container py-4">
+    <h2 class="mb-4">Корзина</h2>
+    {% if items %}
+        <form id="cart-update-form" method="post">
+            {% csrf_token %}
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Фото</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td><a href="{% url 'product_details' item.product.id %}">{{ item.product.name }}</a></td>
+                        <td>{% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="height:50px;">{% endif %}</td>
+                        <td>{{ item.product.price|floatformat:2 }} ₽</td>
+                        <td style="width:120px;">
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center" style="width:70px; display:inline-block;">
+                        </td>
+                        <td><span id="sum-{{ item.id }}">{{ item.sum|floatformat:2 }}</span> ₽</td>
+                        <td>
+                            <button type="submit" name="remove" value="{{ item.id }}" class="btn btn-danger btn-sm">&times;</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end mb-3">
+                <strong>Итого: <span id="total-sum">{{ total_sum|floatformat:2 }}</span> ₽</strong>
+            </div>
+            <div class="text-end">
+                <a href="#" class="btn btn-success">Оформить заказ</a>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-info">Ваша корзина пуста. <a href="{% url 'catalog' %}">Перейти в каталог</a></div>
+    {% endif %}
+</div>
+</div>
+<script>
+document.querySelectorAll('input[type=number][name^=quantity_]').forEach(function(input) {
+    input.addEventListener('change', function() {
+        const itemId = this.name.replace('quantity_', '');
+        const qty = this.value;
+        const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+        fetch('{% url "update_cart_item_quantity" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `item_id=${itemId}&quantity=${qty}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.item_deleted) {
+                    // Удаляем строку из таблицы
+                    const tr = input.closest('tr');
+                    tr.parentNode.removeChild(tr);
+                } else {
+                    // Обновляем сумму по позиции
+                    document.getElementById('sum-' + itemId).textContent = data.item_sum.replace('.', ',');
+                }
+                // Обновляем итоговую сумму
+                document.getElementById('total-sum').textContent = data.total_sum.replace('.', ',');
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

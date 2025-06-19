@@ -1,14 +1,12 @@
 from django.contrib import admin
-
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from .models import *
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    pass
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['user', 'first_name', 'last_name', 'phone']
+    search_fields = ['first_name', 'last_name', 'user__username', 'user__email']
 
 @admin.register(ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
