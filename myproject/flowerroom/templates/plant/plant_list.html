@@ -77,13 +77,13 @@
                                 <div class="col-md-2">{{ plant.product.price }} ₽</div>
                                 <div class="col-md-2 text-end">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{% url 'plant_detail' plant.pk %}" class="btn btn-outline-info" title="Просмотр">
+                                        <a href="{% url 'plant_detail' plant.id %}" class="btn btn-outline-info" title="Просмотр">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{% url 'plant_update' plant.pk %}" class="btn btn-outline-secondary" title="Редактировать">
+                                        <a href="{% url 'plant_update' plant.id %}" class="btn btn-outline-secondary" title="Редактировать">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a href="{% url 'plant_delete' plant.pk %}" class="btn btn-outline-danger" title="Удалить">
+                                        <a href="{% url 'plant_delete' plant.id %}" class="btn btn-outline-danger" title="Удалить">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>

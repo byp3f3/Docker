@@ -53,8 +53,8 @@
         {% for product in products %}
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card product-card h-100">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
                 {% else %}
                     <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                         <i class="fas fa-seedling text-muted" style="font-size: 3rem;"></i>
@@ -74,9 +74,7 @@
                             {% endif %}
                         </div>
                         <div class="d-grid gap-2">
-                            <a href="{% url 'product_details' product.id %}" class="btn btn-outline-primary">
-                                <i class="fas fa-eye"></i> Подробнее
-                            </a>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary">Подробнее</a>
                             {% if user.is_authenticated %}
                                 <form class="add-to-cart-form" data-product-id="{{ product.id }}" method="post">
                                     {% csrf_token %}

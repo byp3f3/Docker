@@ -17,14 +17,24 @@
     <div class="row">
         <!-- Изображение товара -->
         <div class="col-lg-6 mb-4">
-            <div class="product-image-container">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+            <div class="product-image-container text-center mb-4">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="img-fluid rounded main-product-image" alt="{{ product.name }}" style="max-height:400px; cursor:pointer;">
                 {% else %}
                     <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
                         <i class="fas fa-seedling text-muted" style="font-size: 5rem;"></i>
                     </div>
                 {% endif %}
+            </div>
+            <!-- Модальное окно для увеличенного фото -->
+            <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content bg-transparent border-0">
+                        <div class="modal-body p-0 text-center">
+                            <img src="{{ product.image_url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height:90vh; max-width:100%;">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -147,30 +157,18 @@
             <div class="row">
                 {% for similar_product in similar_products %}
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card product-card h-100">
-                        {% if similar_product.image %}
-                            <img src="{{ similar_product.image.url }}" class="card-img-top" alt="{{ similar_product.name }}">
-                        {% else %}
-                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                <i class="fas fa-seedling text-muted" style="font-size: 3rem;"></i>
-                            </div>
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
+                    <div class="card h-100 product-card-sm">
+                        <a href="{% url 'product_detail' similar_product.id %}">
+                            <img src="{{ similar_product.image_url }}" class="card-img-top" alt="{{ similar_product.name }}">
+                        </a>
+                        <div class="card-body">
                             <h6 class="card-title">{{ similar_product.name }}</h6>
-                            <p class="card-text text-muted small">{{ similar_product.category.name }}</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="h6 text-primary mb-0">{{ similar_product.price }} ₽</span>
-                                    {% if similar_product.stock_quantity > 0 %}
-                                        <span class="badge bg-success small">В наличии</span>
-                                    {% else %}
-                                        <span class="badge bg-danger small">Нет в наличии</span>
-                                    {% endif %}
-                                </div>
-                                <a href="{% url 'product_details' similar_product.id %}" class="btn btn-outline-primary btn-sm w-100">
-                                    <i class="fas fa-eye"></i> Подробнее
-                                </a>
-                            </div>
+                            <p class="card-text text-muted">{{ similar_product.price|floatformat:2 }} ₽</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="{% url 'product_detail' similar_product.id %}" class="btn btn-outline-primary btn-sm w-100">
+                                Подробнее
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -229,6 +227,16 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
             alert(data.message);
         });
     });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var img = document.querySelector('.main-product-image');
+    if (img) {
+        img.addEventListener('click', function() {
+            var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            modal.show();
+        });
+    }
 });
 </script>
 

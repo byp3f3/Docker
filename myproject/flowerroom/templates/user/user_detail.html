@@ -70,10 +70,10 @@
                         <i class="fas fa-arrow-left"></i> Вернуться к списку
                     </a>
                     <div>
-                        <a href="{% url 'user_update' user.pk %}" class="btn btn-primary me-2">
-                            <i class="fas fa-pencil"></i> Редактировать
+                        <a href="{% url 'user_update' user.id %}" class="btn btn-primary me-2">
+                            <i class="fas fa-edit"></i> Редактировать
                         </a>
-                        <a href="{% url 'user_delete' user.pk %}" class="btn btn-danger">
+                        <a href="{% url 'user_delete' user.id %}" class="btn btn-danger">
                             <i class="fas fa-trash"></i> Удалить
                         </a>
                     </div>

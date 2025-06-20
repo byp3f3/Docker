@@ -85,14 +85,14 @@
                         {% endif %}
                         
                         <div class="d-flex justify-content-between">
-                            <a href="{% url 'certificate_detail' certificate.pk %}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye"></i> Просмотр
-                            </a>
-                            <div>
-                                <a href="{% url 'certificate_update' certificate.pk %}" class="btn btn-outline-secondary btn-sm">
+                            <div class="btn-group">
+                                <a href="{% url 'certificate_detail' certificate.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'certificate_update' certificate.id %}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'certificate_delete' certificate.pk %}" class="btn btn-outline-danger btn-sm">
+                                <a href="{% url 'certificate_delete' certificate.id %}" class="btn btn-outline-danger btn-sm">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>

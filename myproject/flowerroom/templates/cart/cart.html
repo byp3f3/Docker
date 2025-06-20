@@ -21,14 +21,14 @@
                 {% for item in items %}
                     <tr>
                         <td><a href="{% url 'product_details' item.product.id %}">{{ item.product.name }}</a></td>
-                        <td>{% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="height:50px;">{% endif %}</td>
+                        <td>{% if item.product.image_url %}<img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="height:50px;">{% endif %}</td>
                         <td>{{ item.product.price|floatformat:2 }} ₽</td>
                         <td style="width:120px;">
                             <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" class="form-control form-control-sm text-center" style="width:70px; display:inline-block;">
                         </td>
                         <td><span id="sum-{{ item.id }}">{{ item.sum|floatformat:2 }}</span> ₽</td>
                         <td>
-                            <button type="submit" name="remove" value="{{ item.id }}" class="btn btn-danger btn-sm">&times;</button>
+                            <button type="button" class="btn btn-danger btn-sm remove-item-btn" data-item-id="{{ item.id }}">&times;</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -51,29 +51,61 @@ document.querySelectorAll('input[type=number][name^=quantity_]').forEach(functio
     input.addEventListener('change', function() {
         const itemId = this.name.replace('quantity_', '');
         const qty = this.value;
-        const csrfToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
-        fetch('{% url "update_cart_item_quantity" %}', {
-            method: 'POST',
+        fetch(`/api/cart/item/${itemId}/`, {
+            method: 'PATCH',
             headers: {
-                'X-CSRFToken': csrfToken,
                 'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
             },
-            body: `item_id=${itemId}&quantity=${qty}`
+            body: JSON.stringify({quantity: qty})
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                if (data.item_deleted) {
-                    // Удаляем строку из таблицы
-                    const tr = input.closest('tr');
-                    tr.parentNode.removeChild(tr);
-                } else {
-                    // Обновляем сумму по позиции
-                    document.getElementById('sum-' + itemId).textContent = data.item_sum.replace('.', ',');
-                }
-                // Обновляем итоговую сумму
-                document.getElementById('total-sum').textContent = data.total_sum.replace('.', ',');
+            if (data.quantity) {
+                document.getElementById('sum-' + itemId).textContent = (data.product.price * data.quantity).toFixed(2).replace('.', ',');
+                // Обновить итоговую сумму (пересчитать на клиенте)
+                let total = 0;
+                document.querySelectorAll('span[id^=sum-]').forEach(span => {
+                    total += parseFloat(span.textContent.replace(',', '.'));
+                });
+                document.getElementById('total-sum').textContent = total.toFixed(2).replace('.', ',');
+            } else if (data.item_deleted) {
+                // Удалить строку
+                const tr = input.closest('tr');
+                tr.parentNode.removeChild(tr);
+                // Пересчитать итог
+                let total = 0;
+                document.querySelectorAll('span[id^=sum-]').forEach(span => {
+                    total += parseFloat(span.textContent.replace(',', '.'));
+                });
+                document.getElementById('total-sum').textContent = total.toFixed(2).replace('.', ',');
+            }
+        });
+    });
+});
+document.querySelectorAll('.remove-item-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-item-id');
+        fetch(`/api/cart/item/${itemId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.item_deleted) {
+                // Удалить строку
+                const tr = btn.closest('tr');
+                tr.parentNode.removeChild(tr);
+                // Пересчитать итог
+                let total = 0;
+                document.querySelectorAll('span[id^=sum-]').forEach(span => {
+                    total += parseFloat(span.textContent.replace(',', '.'));
+                });
+                document.getElementById('total-sum').textContent = total.toFixed(2).replace('.', ',');
             }
         });
     });

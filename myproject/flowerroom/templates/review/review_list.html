@@ -87,13 +87,13 @@
                                 </p>
                             </div>
                             <div class="btn-group">
-                                <a href="{% url 'review_detail' review.pk %}" class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'review_detail' review.id %}" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'review_update' review.pk %}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{% url 'review_update' review.id %}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{% url 'review_delete' review.pk %}" class="btn btn-outline-danger btn-sm">
+                                <a href="{% url 'review_delete' review.id %}" class="btn btn-outline-danger btn-sm">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>

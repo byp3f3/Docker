@@ -178,11 +178,11 @@
                                 <i class="bi bi-arrow-left"></i> К списку заказов
                             </a>
                             <div>
-                                <a href="{% url 'order_update' order.pk %}" class="btn btn-primary">
-                                    <i class="bi bi-pencil"></i> Редактировать
+                                <a href="{% url 'order_update' order.id %}" class="btn btn-primary">
+                                    <i class="bi bi-pencil-fill"></i> Редактировать
                                 </a>
-                                <a href="{% url 'order_delete' order.pk %}" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Удалить
+                                <a href="{% url 'order_delete' order.id %}" class="btn btn-danger">
+                                    <i class="bi bi-trash-fill"></i> Удалить
                                 </a>
                             </div>
                         </div>

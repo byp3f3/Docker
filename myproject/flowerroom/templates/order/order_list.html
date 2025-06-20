@@ -98,15 +98,15 @@
                         {% endif %}
 
                         <div class="d-flex justify-content-between">
-                            <a href="{% url 'order_detail' order.pk %}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye"></i> Просмотр
-                            </a>
-                            <div>
-                                <a href="{% url 'order_update' order.pk %}" class="btn btn-outline-secondary btn-sm">
-                                    <i class="bi bi-pencil"></i> Изменить
+                            <div class="btn-group">
+                                <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'order_delete' order.pk %}" class="btn btn-outline-danger btn-sm">
-                                    <i class="bi bi-trash"></i> Удалить
+                                <a href="{% url 'order_update' order.id %}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'order_delete' order.id %}" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
                                 </a>
                             </div>
                         </div>

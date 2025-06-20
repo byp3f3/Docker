@@ -94,11 +94,11 @@
                             <i class="bi bi-arrow-left"></i> Вернуться к списку
                         </a>
                         <div>
-                            <a href="{% url 'customer_update' customer.pk %}" class="btn btn-primary me-2">
-                                <i class="bi bi-pencil"></i> Редактировать
+                            <a href="{% url 'customer_update' customer.id %}" class="btn btn-primary me-2">
+                                <i class="fas fa-edit"></i> Редактировать
                             </a>
-                            <a href="{% url 'customer_delete' customer.pk %}" class="btn btn-danger">
-                                <i class="bi bi-trash"></i> Удалить
+                            <a href="{% url 'customer_delete' customer.id %}" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Удалить
                             </a>
                         </div>
                     </div>
