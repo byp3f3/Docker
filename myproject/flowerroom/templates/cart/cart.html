@@ -38,7 +38,7 @@
                 <strong>Итого: <span id="total-sum">{{ total_sum|floatformat:2 }}</span> ₽</strong>
             </div>
             <div class="text-end">
-                <a href="#" class="btn btn-success">Оформить заказ</a>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal">Оформить заказ</button>
             </div>
         </form>
     {% else %}
@@ -46,22 +46,99 @@
     {% endif %}
 </div>
 </div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="checkoutModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="checkout-form" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title">Оформление заказа</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Город</label>
+          <select name="city" class="form-select" required>
+            <option value="">Выберите город</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>Улица</label>
+          <input name="street" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Дом</label>
+          <input name="building" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Квартира</label>
+          <input name="apartment" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Почтовый индекс</label>
+          <input name="postal_code" class="form-control">
+        </div>
+        <div class="mb-3">
+          <label>Сертификат (если есть)</label>
+          <input name="certificate_code" class="form-control" placeholder="Введите код сертификата">
+        </div>
+        <div id="checkout-error" class="text-danger"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="submit" class="btn btn-success">Подтвердить заказ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
+// Функция для получения CSRF-токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Получаем CSRF-токен
+const csrfToken = getCookie('csrftoken');
+console.log('CSRF Token:', csrfToken); // Для отладки
+
 document.querySelectorAll('input[type=number][name^=quantity_]').forEach(function(input) {
     input.addEventListener('change', function() {
         const itemId = this.name.replace('quantity_', '');
         const qty = this.value;
+        console.log('Updating quantity for item:', itemId, 'to:', qty); // Для отладки
+        
         fetch(`/api/cart/item/${itemId}/`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+                'X-CSRFToken': csrfToken
             },
+            credentials: 'include',
             body: JSON.stringify({quantity: qty})
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status); // Для отладки
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Response data:', data); // Для отладки
             if (data.quantity) {
                 document.getElementById('sum-' + itemId).textContent = (data.product.price * data.quantity).toFixed(2).replace('.', ',');
                 // Обновить итоговую сумму (пересчитать на клиенте)
@@ -81,21 +158,36 @@ document.querySelectorAll('input[type=number][name^=quantity_]').forEach(functio
                 });
                 document.getElementById('total-sum').textContent = total.toFixed(2).replace('.', ',');
             }
+        })
+        .catch(error => {
+            console.error('Error updating quantity:', error);
+            alert('Ошибка обновления количества: ' + error.message);
         });
     });
 });
+
 document.querySelectorAll('.remove-item-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
         const itemId = this.getAttribute('data-item-id');
+        console.log('Removing item:', itemId); // Для отладки
+        
         fetch(`/api/cart/item/${itemId}/`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
-            }
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'include'
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Delete response status:', response.status); // Для отладки
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Delete response data:', data); // Для отладки
             if (data.item_deleted) {
                 // Удалить строку
                 const tr = btn.closest('tr');
@@ -107,7 +199,191 @@ document.querySelectorAll('.remove-item-btn').forEach(function(btn) {
                 });
                 document.getElementById('total-sum').textContent = total.toFixed(2).replace('.', ',');
             }
+        })
+        .catch(error => {
+            console.error('Error removing item:', error);
+            alert('Ошибка удаления товара: ' + error.message);
         });
+    });
+});
+
+// Загрузка городов при открытии модального окна
+document.getElementById('checkoutModal').addEventListener('show.bs.modal', function() {
+    const select = document.querySelector('#checkout-form select[name=city]');
+    // Очищаем список, оставляя только placeholder
+    select.innerHTML = '<option value="">Выберите город</option>';
+    
+    // Загружаем города
+    fetch('/api/cities/', {
+        credentials: 'include' // Добавляем credentials
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки городов');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Загруженные города:', data); // Для отладки
+            
+            // Проверяем, есть ли пагинация
+            let cities = data;
+            if (data.results) {
+                // Если есть пагинация, берем данные из results
+                cities = data.results;
+            }
+            
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city.id;
+                opt.textContent = city.name;
+                select.appendChild(opt);
+            });
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки городов:', error);
+            document.getElementById('checkout-error').textContent = 'Ошибка загрузки списка городов';
+        });
+});
+
+// Отправка формы заказа
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const errorDiv = document.getElementById('checkout-error');
+    errorDiv.textContent = ''; // Очищаем предыдущие ошибки
+    
+    // Базовая валидация сертификата
+    const certificate_code = form.certificate_code.value.trim();
+    if (certificate_code && certificate_code.length < 3) {
+        errorDiv.textContent = 'Код сертификата должен содержать минимум 3 символа';
+        const certificateInput = document.querySelector('input[name="certificate_code"]');
+        if (certificateInput) {
+            certificateInput.style.borderColor = '#dc3545';
+            certificateInput.style.backgroundColor = '#f8d7da';
+        }
+        return;
+    }
+    
+    const address = {
+        city: form.city.value,
+        street: form.street.value,
+        building: form.building.value,
+        apartment: form.apartment.value,
+        postal_code: form.postal_code.value
+    };
+    
+    console.log('Submitting order with address:', address); // Для отладки
+    
+    fetch('/api/checkout/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        credentials: 'include',
+        body: JSON.stringify({address, certificate_code})
+    })
+    .then(response => {
+        console.log('Checkout response status:', response.status); // Для отладки
+        if (!response.ok) {
+            // Для HTTP 400 ошибок пытаемся получить JSON с деталями ошибки
+            if (response.status === 400) {
+                return response.json().then(errorData => {
+                    throw new Error(JSON.stringify(errorData));
+                });
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Checkout response data:', data); // Для отладки
+        if (data.success) {
+            alert('Заказ успешно оформлен!');
+            window.location.reload(); // Перезагружаем страницу
+        } else {
+            // Специальная обработка ошибок сертификатов
+            if (data.error_type && data.error_type.startsWith('certificate_')) {
+                let errorMessage = data.message;
+                
+                // Добавляем дополнительные рекомендации в зависимости от типа ошибки
+                switch (data.error_type) {
+                    case 'certificate_not_found':
+                        errorMessage += '\nПроверьте правильность введенного кода сертификата.';
+                        break;
+                    case 'certificate_used':
+                        errorMessage += '\nЭтот сертификат уже был использован в другом заказе.';
+                        break;
+                    case 'certificate_expired':
+                        errorMessage += '\nСертификат имеет ограниченный срок действия.';
+                        break;
+                }
+                
+                errorDiv.textContent = errorMessage;
+                
+                // Подсвечиваем поле сертификата красным
+                const certificateInput = document.querySelector('input[name="certificate_code"]');
+                if (certificateInput) {
+                    certificateInput.style.borderColor = '#dc3545';
+                    certificateInput.style.backgroundColor = '#f8d7da';
+                    
+                    // Убираем подсветку через 3 секунды
+                    setTimeout(() => {
+                        certificateInput.style.borderColor = '';
+                        certificateInput.style.backgroundColor = '';
+                    }, 3000);
+                }
+            } else {
+                // Обычная обработка других ошибок
+                errorDiv.textContent = data.message || 'Ошибка оформления заказа';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        
+        // Пытаемся парсить JSON ошибку
+        try {
+            const errorData = JSON.parse(error.message);
+            if (errorData.error_type && errorData.error_type.startsWith('certificate_')) {
+                let errorMessage = errorData.message;
+                
+                // Добавляем дополнительные рекомендации в зависимости от типа ошибки
+                switch (errorData.error_type) {
+                    case 'certificate_not_found':
+                        errorMessage += '\nПроверьте правильность введенного кода сертификата.';
+                        break;
+                    case 'certificate_used':
+                        errorMessage += '\nЭтот сертификат уже был использован в другом заказе.';
+                        break;
+                    case 'certificate_expired':
+                        errorMessage += '\nСертификат имеет ограниченный срок действия.';
+                        break;
+                }
+                
+                errorDiv.textContent = errorMessage;
+                
+                // Подсвечиваем поле сертификата красным
+                const certificateInput = document.querySelector('input[name="certificate_code"]');
+                if (certificateInput) {
+                    certificateInput.style.borderColor = '#dc3545';
+                    certificateInput.style.backgroundColor = '#f8d7da';
+                    
+                    // Убираем подсветку через 3 секунды
+                    setTimeout(() => {
+                        certificateInput.style.borderColor = '';
+                        certificateInput.style.backgroundColor = '';
+                    }, 3000);
+                }
+            } else {
+                // Обычная обработка других ошибок
+                errorDiv.textContent = errorData.message || 'Ошибка оформления заказа';
+            }
+        } catch (parseError) {
+            // Если не удалось распарсить JSON, показываем обычную ошибку
+            errorDiv.textContent = 'Ошибка соединения с сервером: ' + error.message;
+        }
     });
 });
 </script>

@@ -1,5 +1,8 @@
+import logging
 from rest_framework import permissions
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+
+logger = logging.getLogger(__name__)
 
 
 class AdminPostPermission(permissions.BasePermission):
@@ -32,6 +35,7 @@ class ReadOnlyOrAdminPermission(permissions.BasePermission):
 
 class CartPermission(permissions.BasePermission):
     def has_permission(self, request, view):
+        logger.info(f"CartPermission check for user: {request.user}, authenticated: {request.user.is_authenticated if request.user else False}")
         return request.user and request.user.is_authenticated
     
     def has_object_permission(self, request, view, obj):

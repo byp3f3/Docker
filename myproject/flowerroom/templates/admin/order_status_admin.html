@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title_name %}Управление статусами заказов{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Управление статусами заказов</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Покупатель</th>
+                    <th>Дата заказа</th>
+                    <th>Адрес</th>
+                    <th>Сумма</th>
+                    <th>Текущий статус</th>
+                    <th>Изменить статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer }}</td>
+                    <td>{{ order.order_date|date:"d.m.Y H:i" }}</td>
+                    <td>
+                        {% if order.address %}
+                            {{ order.address.city.name }}, {{ order.address.street }}, {{ order.address.building }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ order.total_amount|floatformat:2 }} ₽</td>
+                    <td>
+                        {% for code, name in status_choices %}
+                            {% if code == order.status %}
+                                <span class="badge bg-secondary">{{ name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <form method="post" class="d-flex align-items-center gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="status" class="form-select form-select-sm">
+                                {% for code, name in status_choices %}
+                                    <option value="{{ code }}" {% if code == order.status %}selected{% endif %}>{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'admin_panel' %}" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Назад в админ-панель</a>
+</div>
+{% endblock %} 

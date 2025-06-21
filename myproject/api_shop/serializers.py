@@ -84,21 +84,21 @@ class DeliveryAddressSerializer(serializers.ModelSerializer):
         model = DeliveryAddress
         fields = ['id', 'city', 'street', 'building', 'apartment', 'postal_code']
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    class Meta:
+        model = OrderItem
+        fields = ['id', 'product', 'quantity', 'unit_price']
+
 class OrderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer(read_only=True)
     address = DeliveryAddressSerializer(read_only=True)
     certificate = CertificateSerializer(read_only=True)
+    orderitem_set = OrderItemSerializer(many=True, read_only=True)
     order_date = serializers.DateTimeField(format='%d.%m.%Y %H:%M', read_only=True)
     class Meta:
         model = Order
-        fields = ['id', 'customer', 'address', 'order_date', 'status', 'total_amount', 'certificate', 'discount_amount']
-
-class OrderItemSerializer(serializers.ModelSerializer):
-    order = OrderSerializer(read_only=True)
-    product = ProductSerializer(read_only=True)
-    class Meta:
-        model = OrderItem
-        fields = ['id', 'order', 'product', 'quantity', 'unit_price']
+        fields = ['id', 'customer', 'address', 'order_date', 'status', 'total_amount', 'certificate', 'discount_amount', 'orderitem_set']
 
 class ReviewSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)

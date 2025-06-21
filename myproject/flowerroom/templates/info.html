@@ -28,22 +28,6 @@
                                 <p class="card-text">{{ product.description|truncatewords:15 }}</p>
                                 <p class="card-text mt-auto"><strong>{{ product.price|floatformat:0 }} ₽</strong></p>
                                 <a href="/product/product_details/{{ product.id }}/" class="btn btn-outline-primary mb-2">Подробнее</a>
-                                {% if product.stock_quantity > 0 %}
-                                    {% if user.is_authenticated %}
-                                    <form class="add-to-cart-form" data-product-id="{{ product.id }}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-shopping-cart"></i> В корзину
-                                        </button>
-                                    </form>
-                                    {% else %}
-                                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">
-                                        <i class="fas fa-shopping-cart"></i> Войти, чтобы добавить в корзину
-                                    </a>
-                                    {% endif %}
-                                {% else %}
-                                    <button class="btn btn-secondary w-100" disabled><i class="fas fa-times"></i> Нет в наличии</button>
-                                {% endif %}
                             </div>
                         </div>
                     </div>

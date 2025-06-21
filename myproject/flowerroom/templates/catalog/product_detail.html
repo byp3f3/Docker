@@ -148,35 +148,6 @@
         </div>
     </div>
     {% endif %}
-
-    <!-- Похожие товары -->
-    {% if similar_products %}
-    <div class="row mt-5">
-        <div class="col-12">
-            <h3>Похожие товары</h3>
-            <div class="row">
-                {% for similar_product in similar_products %}
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 product-card-sm">
-                        <a href="{% url 'product_detail' similar_product.id %}">
-                            <img src="{{ similar_product.image_url }}" class="card-img-top" alt="{{ similar_product.name }}">
-                        </a>
-                        <div class="card-body">
-                            <h6 class="card-title">{{ similar_product.name }}</h6>
-                            <p class="card-text text-muted">{{ similar_product.price|floatformat:2 }} ₽</p>
-                        </div>
-                        <div class="card-footer bg-white border-top-0">
-                            <a href="{% url 'product_detail' similar_product.id %}" class="btn btn-outline-primary btn-sm w-100">
-                                Подробнее
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <style>
@@ -224,7 +195,15 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert('Ошибка: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Произошла ошибка при добавлении товара в корзину');
         });
     });
 });

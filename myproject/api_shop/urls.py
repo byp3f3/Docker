@@ -22,6 +22,7 @@ from .views import (
     CartAPIView,
     CartItemAPIView,
     UserViewSet,
+    CheckoutAPIView,
 )
 
 router = routers.DefaultRouter()
@@ -48,4 +49,5 @@ urlpatterns = [
     path('auth/profile/', ProfileAPIView.as_view(), name='api_profile'),
     path('cart/', CartAPIView.as_view(), name='api_cart'),
     path('cart/item/<int:item_id>/', CartItemAPIView.as_view(), name='api_cart_item'),
+    path('checkout/', CheckoutAPIView.as_view(), name='api_checkout'),
 ]

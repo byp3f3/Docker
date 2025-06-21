@@ -1,3 +1,4 @@
+import logging
 from .serializers import *
 from rest_framework import viewsets
 from flowerroom.models import *
@@ -7,8 +8,11 @@ from rest_framework import status, permissions
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from .permissions import AdminPostPermission, AdminOnlyPermission, ReadOnlyOrAdminPermission, CartPermission
+from django.utils import timezone
+
+logger = logging.getLogger(__name__)
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 20
@@ -59,7 +63,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
-    permission_classes = [AdminPostPermission]
+    permission_classes = [permissions.AllowAny]
 
 class DeliveryAddressViewSet(viewsets.ModelViewSet):
     queryset = DeliveryAddress.objects.all()
@@ -149,11 +153,13 @@ class ProfileAPIView(APIView):
 class CartAPIView(APIView):
     permission_classes = [CartPermission]
     def get(self, request):
+        logger.info(f"Cart GET request from user: {request.user}")
         customer = request.user.customer
         cart, _ = Cart.objects.get_or_create(customer=customer)
         serializer = CartSerializer(cart, context={'request': request})
         return Response(serializer.data)
     def post(self, request):
+        logger.info(f"Cart POST request from user: {request.user}, data: {request.data}")
         customer = request.user.customer
         cart, _ = Cart.objects.get_or_create(customer=customer)
         product_id = request.data.get('product_id')
@@ -200,4 +206,89 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+
+class CheckoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        customer = request.user.customer
+        cart = Cart.objects.filter(customer=customer).first()
+        if not cart or not cart.items.exists():
+            return Response({'success': False, 'message': 'Корзина пуста'}, status=400)
+
+        address_data = request.data.get('address', {})
+        certificate_code = request.data.get('certificate_code', '').strip()
+
+        # Создание адреса
+        address = DeliveryAddress.objects.create(
+            city_id=address_data.get('city'),
+            street=address_data.get('street'),
+            building=address_data.get('building'),
+            apartment=address_data.get('apartment', ''),
+            postal_code=address_data.get('postal_code', '')
+        )
+
+        total_amount = sum(item.product.price * item.quantity for item in cart.items.all())
+        discount_amount = 0
+        certificate = None
+
+        # Проверка сертификата
+        if certificate_code:
+            try:
+                # Сначала проверяем, существует ли сертификат с таким кодом
+                certificate = Certificate.objects.get(code=certificate_code)
+                
+                # Проверяем, не использован ли уже сертификат
+                if certificate.is_used:
+                    return Response({
+                        'success': False, 
+                        'message': 'Сертификат уже был использован',
+                        'error_type': 'certificate_used'
+                    }, status=400)
+                
+                # Проверяем срок действия сертификата
+                if certificate.expiry_date and certificate.expiry_date < timezone.now().date():
+                    return Response({
+                        'success': False, 
+                        'message': 'Сертификат просрочен',
+                        'error_type': 'certificate_expired'
+                    }, status=400)
+                
+                # Если все проверки пройдены, применяем сертификат
+                discount_amount = min(certificate.amount, total_amount)
+                certificate.is_used = True
+                certificate.used_by = customer
+                certificate.used_date = timezone.now()
+                certificate.save()
+                
+            except Certificate.DoesNotExist:
+                return Response({
+                    'success': False, 
+                    'message': 'Сертификат с таким кодом не найден',
+                    'error_type': 'certificate_not_found'
+                }, status=400)
+
+        # Создание заказа
+        order = Order.objects.create(
+            customer=customer,
+            address=address,
+            status='Pending',
+            total_amount=total_amount - discount_amount,
+            certificate=certificate,
+            discount_amount=discount_amount
+        )
+
+        for item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                unit_price=item.product.price
+            )
+            item.product.stock_quantity -= item.quantity
+            item.product.save()
+
+        cart.items.all().delete()
+
+        return Response({'success': True, 'order_id': order.id, 'total_amount': float(order.total_amount), 'discount_amount': float(discount_amount)})
 

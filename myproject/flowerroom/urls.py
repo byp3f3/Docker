@@ -63,4 +63,8 @@ urlpatterns = [
     path('cart/add/', add_to_cart_view, name='add_to_cart'),
     path('cart/', cart_view, name='cart'),
     path('cart/update-quantity/', update_cart_item_quantity, name='update_cart_item_quantity'),
+    path('my-orders/', my_orders_view, name='my_orders'),
+    path('my-orders/<int:order_id>/cancel/', cancel_order_view, name='cancel_order'),
+
+    path('admin/order-status/', order_status_admin_view, name='order_status_admin'),
 ]

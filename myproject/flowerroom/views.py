@@ -752,35 +752,54 @@ def profile_view(request):
 
 @login_required
 def profile_edit_view(request):
-    api_url = request.build_absolute_uri('/api/auth/profile/')
     if request.method == 'POST':
-        data = {
-            'first_name': request.POST.get('first_name'),
-            'last_name': request.POST.get('last_name'),
-            'email': request.POST.get('email'),
-            'phone': request.POST.get('phone'),
-        }
-        api_response = requests.put(api_url, data=data, cookies=request.COOKIES)
-        if api_response.status_code == 200:
+        try:
+            # Получаем данные из формы
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            phone = request.POST.get('phone')
+            
+            # Обновляем данные пользователя
+            user = request.user
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.save()
+            
+            # Обновляем данные покупателя
+            customer = request.user.customer
+            customer.first_name = first_name
+            customer.last_name = last_name
+            customer.phone = phone
+            customer.save()
+            
             messages.success(request, 'Профиль успешно обновлен!')
             return redirect('profile')
-        messages.error(request, 'Ошибка обновления профиля')
-    # GET — получить текущие данные
-    api_response = requests.get(api_url, cookies=request.COOKIES)
-    if api_response.status_code == 200:
-        data = api_response.json()
-        customer = data.get('customer') or {}
-        api_user = data.get('user') or {}
+        except Exception as e:
+            messages.error(request, f'Ошибка обновления профиля: {str(e)}')
+    
+    # GET — показать форму с текущими данными
+    try:
+        customer = request.user.customer
+        user = request.user
+        
         initial_data = {
-            'first_name': api_user.get('first_name', ''),
-            'last_name': api_user.get('last_name', ''),
-            'email': api_user.get('email', ''),
-            'phone': customer.get('phone', ''),
+            'first_name': user.first_name or '',
+            'last_name': user.last_name or '',
+            'email': user.email or '',
+            'phone': customer.phone or '',
         }
+        
         form = ProfileEditForm(initial=initial_data)
-        return render(request, 'auth/profile_edit.html', {'form': form, 'customer': customer, 'api_user': api_user})
-    messages.error(request, 'Ошибка загрузки профиля')
-    return redirect('profile')
+        return render(request, 'auth/profile_edit.html', {
+            'form': form, 
+            'customer': customer, 
+            'user': user
+        })
+    except Exception as e:
+        messages.error(request, f'Ошибка загрузки профиля: {str(e)}')
+        return redirect('profile')
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/')
 def admin_panel_view(request):
@@ -899,30 +918,89 @@ def add_to_cart_view(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         quantity = int(request.POST.get('quantity', 1))
-        api_url = request.build_absolute_uri('/api/cart/')
-        api_response = requests.post(api_url, data={'product_id': product_id, 'quantity': quantity}, cookies=request.COOKIES)
-        if api_response.status_code == 200:
-            return JsonResponse({'success': True, 'message': 'Товар добавлен в корзину.'})
-        else:
-            msg = api_response.json().get('message', 'Ошибка добавления в корзину')
-            return JsonResponse({'success': False, 'message': msg})
-    return JsonResponse({'success': False, 'message': 'Неверный метод'})
+        
+        try:
+            # Получаем или создаем корзину для пользователя
+            customer = request.user.customer
+            cart, _ = Cart.objects.get_or_create(customer=customer)
+            
+            # Получаем товар
+            product = Product.objects.get(id=product_id)
+            
+            # Проверяем наличие
+            if product.stock_quantity < 1:
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'Товар нет в наличии.'
+                })
+            
+            # Проверяем, достаточно ли товара на складе
+            if product.stock_quantity < quantity:
+                return JsonResponse({
+                    'success': False, 
+                    'message': f'Недостаточно товара на складе. Доступно: {product.stock_quantity} шт.'
+                })
+            
+            # Добавляем товар в корзину
+            cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+            if not created:
+                cart_item.quantity += quantity
+            else:
+                cart_item.quantity = quantity
+            cart_item.save()
+            
+            return JsonResponse({
+                'success': True, 
+                'message': f'Товар "{product.name}" успешно добавлен в корзину!'
+            })
+        except Product.DoesNotExist:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Товар не найден.'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'message': f'Ошибка: {str(e)}'
+            })
+    
+    return JsonResponse({
+        'success': False, 
+        'message': 'Неверный метод запроса'
+    })
 
 @login_required
 def cart_view(request):
-    api_url = request.build_absolute_uri('/api/cart/')
-    api_response = requests.get(api_url, cookies=request.COOKIES)
-    items = []
-    total_sum = 0
-    if api_response.status_code == 200:
-        cart = api_response.json()
-        for item in cart.get('items', []):
-            product = item['product']
-            item['product']['image_url'] = product.get('image')
-            item['sum'] = float(product['price']) * int(item['quantity'])
-            total_sum += item['sum']
-            items.append(item)
-    return render(request, 'cart/cart.html', {'items': items, 'total_sum': total_sum})
+    try:
+        # Получаем корзину пользователя
+        customer = request.user.customer
+        cart, _ = Cart.objects.get_or_create(customer=customer)
+        
+        # Получаем товары в корзине
+        items = []
+        total_sum = 0
+        
+        for cart_item in cart.items.select_related('product').all():
+            item_sum = float(cart_item.product.price) * int(cart_item.quantity)
+            total_sum += item_sum
+            
+            item_data = {
+                'id': cart_item.id,
+                'product': {
+                    'id': cart_item.product.id,
+                    'name': cart_item.product.name,
+                    'price': float(cart_item.product.price),
+                    'image_url': cart_item.product.image.url if cart_item.product.image else None
+                },
+                'quantity': cart_item.quantity,
+                'sum': item_sum
+            }
+            items.append(item_data)
+        
+        return render(request, 'cart/cart.html', {'items': items, 'total_sum': total_sum})
+    except Exception as e:
+        # В случае ошибки возвращаем пустую корзину
+        return render(request, 'cart/cart.html', {'items': [], 'total_sum': 0})
 
 @require_POST
 @csrf_exempt
@@ -1051,4 +1129,135 @@ def review_delete_view(request, pk):
     else:
         messages.error(request, 'Отзыв не найден.')
         return redirect('review_list')
+
+@login_required
+def my_orders_view(request):
+    try:
+        # Получаем заказы пользователя напрямую из базы данных
+        customer = request.user.customer
+        orders = Order.objects.filter(customer=customer).select_related(
+            'address__city', 
+            'certificate'
+        ).prefetch_related(
+            'orderitem_set__product'
+        ).order_by('-order_date')
+        
+        # Преобразуем в формат для шаблона
+        orders_data = []
+        for order in orders:
+            order_data = {
+                'id': order.id,
+                'order_date': order.order_date,
+                'status': order.status,
+                'status_display': get_order_status_display(order.status),
+                'total_amount': float(order.total_amount),
+                'discount_amount': float(order.discount_amount) if order.discount_amount else 0,
+                'address': {
+                    'city': {'name': order.address.city.name} if order.address and order.address.city else None,
+                    'street': order.address.street if order.address else None,
+                    'building': order.address.building if order.address else None,
+                    'apartment': order.address.apartment if order.address else None,
+                    'postal_code': order.address.postal_code if order.address else None,
+                } if order.address else None,
+                'certificate': {
+                    'code': order.certificate.code
+                } if order.certificate else None,
+                'orderitem_set': []
+            }
+            
+            # Добавляем товары в заказе
+            for item in order.orderitem_set.all():
+                item_data = {
+                    'id': item.id,
+                    'quantity': item.quantity,
+                    'unit_price': float(item.unit_price),
+                    'product': {
+                        'id': item.product.id,
+                        'name': item.product.name,
+                        'image': item.product.image.url if item.product.image else None
+                    }
+                }
+                order_data['orderitem_set'].append(item_data)
+            
+            orders_data.append(order_data)
+        
+        return render(request, 'orders/my_orders.html', {'orders': orders_data})
+    except Exception as e:
+        messages.error(request, f'Ошибка загрузки заказов: {str(e)}')
+        return render(request, 'orders/my_orders.html', {'orders': []})
+
+def get_order_status_display(status_code):
+    """Возвращает отображаемое название статуса заказа"""
+    statuses = {
+        'Pending': 'Ожидает обработки',
+        'Processing': 'В обработке', 
+        'Shipped': 'Отправлен',
+        'Delivered': 'Доставлен',
+        'Cancelled': 'Отменен'
+    }
+    return statuses.get(status_code, 'Неизвестный статус')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/')
+def order_status_admin_view(request):
+    from .models import Order
+    orders = Order.objects.select_related('customer', 'address').order_by('-order_date')
+    status_choices = Order.STATUS_CHOICES
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        new_status = request.POST.get('status')
+        try:
+            order = Order.objects.get(id=order_id)
+            if new_status in dict(Order.STATUS_CHOICES):
+                order.status = new_status
+                order.save()
+                messages.success(request, f'Статус заказа #{order.id} успешно изменён!')
+            else:
+                messages.error(request, 'Недопустимый статус!')
+        except Order.DoesNotExist:
+            messages.error(request, 'Заказ не найден!')
+        return redirect('order_status_admin')
+
+    return render(request, 'admin/order_status_admin.html', {
+        'orders': orders,
+        'status_choices': status_choices,
+    })
+
+@login_required
+def cancel_order_view(request, order_id):
+    try:
+        # Получаем заказ и проверяем, что он принадлежит текущему пользователю
+        customer = request.user.customer
+        order = Order.objects.get(id=order_id, customer=customer)
+        
+        # Проверяем, что заказ можно отменить (только если он не доставлен и не отменен)
+        if order.status in ['Delivered', 'Cancelled']:
+            messages.error(request, 'Этот заказ нельзя отменить.')
+            return redirect('my_orders')
+        
+        # Отменяем заказ
+        order.status = 'Cancelled'
+        order.save()
+        
+        # Возвращаем товары на склад
+        for item in order.orderitem_set.all():
+            item.product.stock_quantity += item.quantity
+            item.product.save()
+        
+        # Возвращаем сертификат, если он был использован
+        if order.certificate:
+            order.certificate.is_used = False
+            order.certificate.used_by = None
+            order.certificate.used_date = None
+            order.certificate.save()
+        
+        messages.success(request, f'Заказ #{order.id} успешно отменен.')
+        return redirect('my_orders')
+        
+    except Order.DoesNotExist:
+        messages.error(request, 'Заказ не найден.')
+        return redirect('my_orders')
+    except Exception as e:
+        messages.error(request, f'Ошибка при отмене заказа: {str(e)}')
+        return redirect('my_orders')
 
