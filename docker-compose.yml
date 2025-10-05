@@ -1,0 +1,38 @@
+version: '3'
+services:
+  web:
+    restart: always
+    build: .
+    command:  >
+      sh -c "python manage.py makemigrations --noinput &&
+             python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./myproject:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    restart: always
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=flowerroom
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=124
+    ports:
+      - 5432:5432
+
+  adminer:
+    restart: always
+    image: adminer
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

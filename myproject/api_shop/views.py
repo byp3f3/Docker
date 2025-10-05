@@ -35,7 +35,7 @@ class SupplierViewSet(viewsets.ModelViewSet):
     permission_classes = [AdminPostPermission]
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by('id')
     serializer_class = ProductSerializer
     pagination_class = StandardResultsSetPagination
     permission_classes = [AdminPostPermission]
