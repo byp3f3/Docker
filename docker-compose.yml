@@ -8,7 +8,8 @@ services:
              python manage.py migrate --noinput &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - ./myproject:/app
+      - templates:/app/flowerroom/templates #Volume
+      - .\myproject\flowerroom\templates\catalog\catalog.html:/app/flowerroom/templates/catalog/catalog.html #Bind Mount
     ports:
       - 8000:8000
     depends_on:
@@ -36,3 +37,4 @@ services:
 
 volumes:
   postgres_data:
+  templates:
