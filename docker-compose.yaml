@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9725:9090
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+    networks:
+      - monitoring_system
+      
+  grafana:
+    image: grafana/grafana:latest
+    user: root
+    depends_on:
+      - prometheus
+    ports:
+    - 3618:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    container_name: grafana
+    hostname: grafana
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+    networks:
+      - monitoring_system
+
+networks:
+  monitoring_system:
+    external: true
+
+# docker network create monitoring_system
+# docker-compose up

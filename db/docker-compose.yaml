@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8.0.43
+    volumes:
+      - mysql_data:/var/lib/mysql
+    container_name: mysql
+    hostname: mysql
+    ports:
+      - 3307:3306
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=simple_metrics  
+      - TZ=Europe/Moscow
+    networks:
+      - monitoring_system
+
+volumes:
+  mysql_data:
+
+networks:
+  monitoring_system:
+    external: true
+
+
+# docker-compose up
