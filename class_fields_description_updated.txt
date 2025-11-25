@@ -1,0 +1,624 @@
+Class Fields Description for JoyBox Toy Store System
+CLASS NAMES:
+1. Role - класс, представляющий роли пользователей в системе
+2. User - класс, представляющий пользователей системы (родитель, ребенок, менеджер, администратор)
+3. Category - класс, представляющий категории товаров
+4. Brand - класс, представляющий бренды товаров
+5. Product - класс, представляющий товары в магазине
+6. ProductImage - класс, представляющий изображения товаров
+7. ProductAttribute - класс, представляющий атрибуты товаров
+8. Address - класс, представляющий адреса пользователей
+9. OrderStatus - класс, представляющий статусы заказов
+10. Order - класс, представляющий заказы пользователей
+11. OrderItem - класс, представляющий элементы заказов
+12. Review - класс, представляющий отзывы о товарах
+13. Wishlist - класс, представляющий список желаемого пользователя
+14. Cart - класс, представляющий корзину покупок пользователя
+15. ParentChild - класс, представляющий связи между родителями и детьми
+16. AuditLog - класс, представляющий журнал аудита действий пользователей
+20. RoleAdmin - административный класс для управления ролями
+21. UserAdmin - административный класс для управления пользователями
+22. CategoryAdmin - административный класс для управления категориями
+23. BrandAdmin - административный класс для управления брендами
+24. ProductAdmin - административный класс для управления товарами
+25. ProductImageAdmin - административный класс для управления изображениями товаров
+26. ProductAttributeAdmin - административный класс для управления атрибутами товаров
+27. AddressAdmin - административный класс для управления адресами
+28. OrderStatusAdmin - административный класс для управления статусами заказов
+29. OrderAdmin - административный класс для управления заказами
+30. OrderItemAdmin - административный класс для управления элементами заказов
+31. ReviewAdmin - административный класс для управления отзывами
+32. WishlistAdmin - административный класс для управления списками желаемого
+33. CartAdmin - административный класс для управления корзинами
+34. ParentChildAdmin - административный класс для управления связями родитель-ребенок
+35. AuditLogAdmin - административный класс для управления журналом аудита
+36. ModelSerializerUtility - утилитарный класс для сериализации и десериализации всех моделей
+37. ModelViewSetUtility - утилитарный класс для обработки всех API-запросов для моделей
+38. ModelFormUtility - утилитарный класс для обработки всех форм
+71. IsAdminOrReadOnly - класс разрешений для администраторов или только чтения
+72. IsOwnerOrAdmin - класс разрешений для владельца или администратора
+73. IsParentOrAdmin - класс разрешений для родителя или администратора
+74. IsAuthenticatedUser - класс разрешений для аутентифицированных пользователей
+75. SalesAnalytics - класс для аналитики продаж
+76. ProductAnalytics - класс для аналитики товаров
+77. UserAnalytics - класс для аналитики пользователей
+78. ReportGenerator - класс для генерации отчетов
+79. DataExport - класс для экспорта данных
+80. EmailService - сервис для отправки электронной почты
+81. NotificationService - сервис для отправки уведомлений
+82. PaymentService - сервис для обработки платежей
+83. SearchService - сервис для поиска товаров
+84. RecommendationEngine - движок рекомендаций товаров
+85. AuditService - сервис для ведения аудита
+86. BackupService - сервис для резервного копирования
+
+MODEL CLASSES:
+
+Класс Role:
+roleId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе роли
+roleName - публичное поле, строкового типа данных, содержащие информацию о названии роли
+__str__(): String - публичный метод, возвращающий строковое представление объекта Role
+get_users(): QuerySet[User] - публичный метод, возвращающий QuerySet пользователей с данной ролью
+
+Класс User:
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+lastName - публичное поле, строкового типа данных, содержащие информацию о фамилии пользователя
+firstName - публичное поле, строкового типа данных, содержащие информацию о имени пользователя
+middleName - публичное поле, строкового типа данных, содержащие информацию об отчестве пользователя
+email - публичное поле, строкового типа данных, содержащие информацию об электронной почте пользователя
+password - защищенное поле, строкового типа данных, содержащие информацию о пароле пользователя
+roleId - публичное поле, целочисленного типа данных, содержащие информацию о идентификаторе роли пользователя
+phone - публичное поле, строкового типа данных, содержащие информацию о телефоне пользователя
+birthDate - публичное поле, типа даты, содержащие информацию о дате рождения пользователя
+createdAt - публичное поле, типа даты и времени, содержащие информацию о дате создания пользователя
+username - публичное поле, строкового типа данных, содержащие информацию о имени пользователя
+__str__(): String - публичный метод, возвращающий строковое представление объекта User
+get_full_name(): String - публичный метод, возвращающий полное имя пользователя
+get_short_name(): String - публичный метод, возвращающий краткое имя пользователя
+get_addresses(): QuerySet[Address] - публичный метод, возвращающий QuerySet адресов пользователя
+get_orders(): QuerySet[Order] - публичный метод, возвращающий QuerySet заказов пользователя
+get_reviews(): QuerySet[Review] - публичный метод, возвращающий QuerySet отзывов пользователя
+get_wishlist(): QuerySet[Wishlist] - публичный метод, возвращающий QuerySet списка желаемого пользователя
+get_cart_items(): QuerySet[Cart] - публичный метод, возвращающий QuerySet элементов корзины пользователя
+get_children(): QuerySet[User] - публичный метод, возвращающий QuerySet детей пользователя
+get_parent(): QuerySet[User] - публичный метод, возвращающий QuerySet родителей пользователя
+get_audit_logs(): QuerySet[AuditLog] - публичный метод, возвращающий QuerySet записей аудита пользователя
+has_role(role_name: String): Boolean - публичный метод, проверяющий, имеет ли пользователь указанную роль
+is_parent(): Boolean - публичный метод, проверяющий, является ли пользователь родителем
+is_child(): Boolean - публичный метод, проверяющий, является ли пользователь ребенком
+is_admin(): Boolean - публичный метод, проверяющий, является ли пользователь администратором
+is_manager(): Boolean - публичный метод, проверяющий, является ли пользователь менеджером
+
+Класс Category:
+categoryId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе категории
+categoryName - публичное поле, строкового типа данных, содержащие информацию о названии категории
+categoryDescription - публичное поле, текстового типа данных, содержащие информацию об описании категории
+__str__(): String - публичный метод, возвращающий строковое представление объекта Category
+get_products(): QuerySet[Product] - публичный метод, возвращающий QuerySet товаров категории
+get_product_count(): Integer - публичный метод, возвращающий количество товаров в категории
+
+Класс Brand:
+brandId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе бренда
+brandName - публичное поле, строкового типа данных, содержащие информацию о названии бренда
+brandDescription - публичное поле, текстового типа данных, содержащие информацию об описании бренда
+brandCountry - публичное поле, строкового типа данных, содержащие информацию о стране бренда
+__str__(): String - публичный метод, возвращающий строковое представление объекта Brand
+get_products(): QuerySet[Product] - публичный метод, возвращающий QuerySet товаров бренда
+get_product_count(): Integer - публичный метод, возвращающий количество товаров бренда
+
+Класс Product:
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+productName - публичное поле, строкового типа данных, содержащие информацию о названии товара
+productDescription - публичное поле, текстового типа данных, содержащие информацию об описании товара
+categoryId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе категории товара
+brandId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе бренда товара
+price - публичное поле, десятичного типа данных, содержащие информацию о цене товара
+ageRating - публичное поле, целочисленного типа данных, содержащие информацию о возрастном рейтинге товара
+quantity - публичное поле, целочисленного типа данных, содержащие информацию о количестве товара
+weightKg - публичное поле, десятичного типа данных, содержащие информацию о весе товара в килограммах
+dimensions - публичное поле, строкового типа данных, содержащие информацию о размерах товара
+__str__(): String - публичный метод, возвращающий строковое представление объекта Product
+get_images(): QuerySet[ProductImage] - публичный метод, возвращающий QuerySet изображений товара
+get_main_image(): ProductImage - публичный метод, возвращающий основное изображение товара
+get_attributes(): QuerySet[ProductAttribute] - публичный метод, возвращающий QuerySet атрибутов товара
+get_reviews(): QuerySet[Review] - публичный метод, возвращающий QuerySet отзывов товара
+get_average_rating(): Float - публичный метод, возвращающий средний рейтинг товара
+get_review_count(): Integer - публичный метод, возвращающий количество отзывов товара
+get_related_products(): QuerySet[Product] - публичный метод, возвращающий QuerySet связанных товаров
+is_in_wishlist(user: User): Boolean - публичный метод, проверяющий, находится ли товар в списке желаемого пользователя
+is_in_cart(user: User): Boolean - публичный метод, проверяющий, находится ли товар в корзине пользователя
+get_inventory_status(): String - публичный метод, возвращающий статус наличия товара
+reduce_quantity(quantity: Integer): Boolean - публичный метод, уменьшающий количество товара на складе
+
+Класс ProductImage:
+productImageId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе изображения товара
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+url - публичное поле, строкового типа данных, содержащие информацию о ссылке на изображение товара
+altText - публичное поле, строкового типа данных, содержащие информацию об альтернативном тексте изображения товара
+isMain - публичное поле, булевого типа данных, содержащие информацию о том, является ли изображение основным
+__str__(): String - публичный метод, возвращающий строковое представление объекта ProductImage
+get_product(): Product - публичный метод, возвращающий товар, к которому относится изображение
+
+Класс ProductAttribute:
+productAttributeId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе атрибута товара
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+productAttributeName - публичное поле, строкового типа данных, содержащие информацию о названии атрибута товара
+productAttributeValue - публичное поле, строкового типа данных, содержащие информацию о значении атрибута товара
+productAttributeUnit - публичное поле, строкового типа данных, содержащие информацию о единице измерения атрибута товара
+__str__(): String - публичный метод, возвращающий строковое представление объекта ProductAttribute
+get_product(): Product - публичный метод, возвращающий товар, к которому относится атрибут
+
+Класс Address:
+addressId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе адреса
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+city - публичное поле, строкового типа данных, содержащие информацию о городе
+street - публичное поле, строкового типа данных, содержащие информацию об улице
+house - публичное поле, строкового типа данных, содержащие информацию о доме
+flat - публичное поле, строкового типа данных, содержащие информацию о квартире
+index - публичное поле, строкового типа данных, содержащие информацию об индексе
+__str__(): String - публичный метод, возвращающий строковое представление объекта Address
+get_user(): User - публичный метод, возвращающий пользователя, которому принадлежит адрес
+get_orders(): QuerySet[Order] - публичный метод, возвращающий QuerySet заказов с данным адресом
+get_full_address(): String - публичный метод, возвращающий полный адрес в виде строки
+
+Класс OrderStatus:
+orderStatusId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе статуса заказа
+orderStatusName - публичное поле, строкового типа данных, содержащие информацию о названии статуса заказа
+__str__(): String - публичный метод, возвращающий строковое представление объекта OrderStatus
+get_orders(): QuerySet[Order] - публичный метод, возвращающий QuerySet заказов с данным статусом
+
+Класс Order:
+orderId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе заказа
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+orderStatusId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе статуса заказа
+total - публичное поле, десятичного типа данных, содержащие информацию об общей сумме заказа
+addressId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе адреса
+deliveryType - публичное поле, строкового типа данных, содержащие информацию о типе доставки
+paymentType - публичное поле, строкового типа данных, содержащие информацию о типе оплаты
+paymentStatus - публичное поле, строкового типа данных, содержащие информацию о статусе оплаты
+note - публичное поле, строкового типа данных, содержащие информацию о примечании к заказу
+createdAt - публичное поле, типа даты и времени, содержащие информацию о дате создания заказа
+__str__(): String - публичный метод, возвращающий строковое представление объекта Order
+get_user(): User - публичный метод, возвращающий пользователя, совершившего заказ
+get_status(): OrderStatus - публичный метод, возвращающий статус заказа
+get_address(): Address - публичный метод, возвращающий адрес доставки заказа
+get_items(): QuerySet[OrderItem] - публичный метод, возвращающий QuerySet элементов заказа
+get_item_count(): Integer - публичный метод, возвращающий количество элементов в заказе
+update_total(): DecimalField - публичный метод, обновляющий общую сумму заказа
+change_status(new_status: OrderStatus): Boolean - публичный метод, изменяющий статус заказа
+is_paid(): Boolean - публичный метод, проверяющий, оплачен ли заказ
+is_delivered(): Boolean - публичный метод, проверяющий, доставлен ли заказ
+
+Класс OrderItem:
+orderItemId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе элемента заказа
+orderId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе заказа
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+quantity - публичное поле, целочисленного типа данных, содержащие информацию о количестве товара в заказе
+unitPrice - публичное поле, десятичного типа данных, содержащие информацию о цене единицы товара
+__str__(): String - публичный метод, возвращающий строковое представление объекта OrderItem
+get_order(): Order - публичный метод, возвращающий заказ, к которому относится элемент
+get_product(): Product - публичный метод, возвращающий товар элемента заказа
+get_total_price(): DecimalField - публичный метод, возвращающий общую стоимость элемента заказа
+
+Класс Review:
+reviewId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе отзыва
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+rating - публичное поле, целочисленного типа данных, содержащие информацию о рейтинге товара
+reviewText - публичное поле, текстового типа данных, содержащие информацию о тексте отзыва
+createdAt - публичное поле, типа даты и времени, содержащие информацию о дате создания отзыва
+updatedAt - публичное поле, типа даты и времени, содержащие информацию о дате обновления отзыва
+__str__(): String - публичный метод, возвращающий строковое представление объекта Review
+get_product(): Product - публичный метод, возвращающий товар, к которому относится отзыв
+get_user(): User - публичный метод, возвращающий пользователя, оставившего отзыв
+update_review(text: String, rating: Integer): Boolean - публичный метод, обновляющий текст и рейтинг отзыва
+
+Класс Wishlist:
+wishlistId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе списка желаемого
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+__str__(): String - публичный метод, возвращающий строковое представление объекта Wishlist
+get_user(): User - публичный метод, возвращающий пользователя, которому принадлежит список желаемого
+get_product(): Product - публичный метод, возвращающий товар в списке желаемого
+is_owner(user: User): Boolean - публичный метод, проверяющий, принадлежит ли список желаемого указанному пользователю
+
+Класс Cart:
+cartId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе корзины
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+productId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе товара
+quantity - публичное поле, целочисленного типа данных, содержащие информацию о количестве товара в корзине
+__str__(): String - публичный метод, возвращающий строковое представление объекта Cart
+get_user(): User - публичный метод, возвращающий пользователя, которому принадлежит корзина
+get_product(): Product - публичный метод, возвращающий товар в корзине
+get_total_price(): DecimalField - публичный метод, возвращающий общую стоимость товара в корзине
+update_quantity(new_quantity: Integer): Boolean - публичный метод, обновляющий количество товара в корзине
+is_owner(user: User): Boolean - публичный метод, проверяющий, принадлежит ли корзина указанному пользователю
+
+Класс ParentChild:
+parentChildId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе связи родитель-ребенок
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе родителя
+childId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе ребенка
+__str__(): String - публичный метод, возвращающий строковое представление объекта ParentChild
+get_parent(): User - публичный метод, возвращающий родителя
+get_child(): User - публичный метод, возвращающий ребенка
+is_valid_relation(): Boolean - публичный метод, проверяющий, является ли связь действительной
+
+Класс AuditLog:
+auditLogId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе записи аудита
+userId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе пользователя
+action - публичное поле, строкового типа данных, содержащие информацию о действии пользователя
+tableName - публичное поле, строкового типа данных, содержащие информацию о названии таблицы
+recordId - публичное поле, целочисленного типа данных, содержащие информацию об идентификаторе записи
+oldValues - публичное поле, JSON типа данных, содержащие информацию о старых значениях записи
+newValues - публичное поле, JSON типа данных, содержащие информацию о новых значениях записи
+createdAt - публичное поле, типа даты и времени, содержащие информацию о дате создания записи аудита
+__str__(): String - публичный метод, возвращающий строковое представление объекта AuditLog
+get_user(): User - публичный метод, возвращающий пользователя, совершившего действие
+get_record(): Object - публичный метод, возвращающий запись, к которой относится аудит
+format_changes(): String - публичный метод, возвращающий форматированные изменения записи
+
+ADMIN CLASSES:
+
+Класс RoleAdmin:
+model - публичное поле, содержащее информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+search_fields - публичное поле, список полей для поиска
+get_queryset(request): QuerySet[Role] - публичный метод, возвращающий QuerySet для модели Role
+
+Класс UserAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+search_fields - публичное поле, список полей для поиска
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[User] - публичный метод, возвращающий QuerySet для модели User
+
+Класс CategoryAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+search_fields - публичное поле, список полей для поиска
+get_queryset(request): QuerySet[Category] - публичный метод, возвращающий QuerySet для модели Category
+
+Класс BrandAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+search_fields - публичное поле, список полей для поиска
+get_queryset(request): QuerySet[Brand] - публичный метод, возвращающий QuerySet для модели Brand
+
+Класс ProductAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+search_fields - публичное поле, список полей для поиска
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[Product] - публичный метод, возвращающий QuerySet для модели Product
+
+Класс ProductImageAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[ProductImage] - публичный метод, возвращающий QuerySet для модели ProductImage
+
+Класс ProductAttributeAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[ProductAttribute] - публичный метод, возвращающий QuerySet для модели ProductAttribute
+
+Класс AddressAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[Address] - публичный метод, возвращающий QuerySet для модели Address
+
+Класс OrderStatusAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[OrderStatus] - публичный метод, возвращающий QuerySet для модели OrderStatus
+
+Класс OrderAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[Order] - публичный метод, возвращающий QuerySet для модели Order
+
+Класс OrderItemAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[OrderItem] - публичный метод, возвращающий QuerySet для модели OrderItem
+
+Класс ReviewAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[Review] - публичный метод, возвращающий QuerySet для модели Review
+
+Класс WishlistAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[Wishlist] - публичный метод, возвращающий QuerySet для модели Wishlist
+
+Класс CartAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[Cart] - публичный метод, возвращающий QuerySet для модели Cart
+
+Класс ParentChildAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+get_queryset(request): QuerySet[ParentChild] - публичный метод, возвращающий QuerySet для модели ParentChild
+
+Класс AuditLogAdmin:
+model - публичное поле, содержащие информацию о модели, с которой работает админ-класс
+list_display - публичное поле, список полей для отображения в списке объектов
+list_filter - публичное поле, список полей для фильтрации
+get_queryset(request): QuerySet[AuditLog] - публичный метод, возвращающий QuerySet для модели AuditLog
+
+UTILITY CLASSES:
+
+Класс ModelSerializerUtility:
+serialize_role(data: Dict): Dict - публичный метод, сериализующий данные роли
+serialize_user(data: Dict): Dict - публичный метод, сериализующий данные пользователя
+serialize_category(data: Dict): Dict - публичный метод, сериализующий данные категории
+serialize_brand(data: Dict): Dict - публичный метод, сериализующий данные бренда
+serialize_product(data: Dict): Dict - публичный метод, сериализующий данные товара
+serialize_product_image(data: Dict): Dict - публичный метод, сериализующий данные изображения товара
+serialize_product_attribute(data: Dict): Dict - публичный метод, сериализующий данные атрибута товара
+serialize_address(data: Dict): Dict - публичный метод, сериализующий данные адреса
+serialize_order_status(data: Dict): Dict - публичный метод, сериализующий данные статуса заказа
+serialize_order(data: Dict): Dict - публичный метод, сериализующий данные заказа
+serialize_order_item(data: Dict): Dict - публичный метод, сериализующий данные элемента заказа
+serialize_review(data: Dict): Dict - публичный метод, сериализующий данные отзыва
+serialize_wishlist(data: Dict): Dict - публичный метод, сериализующий данные списка желаемого
+serialize_cart(data: Dict): Dict - публичный метод, сериализующий данные корзины
+serialize_parent_child(data: Dict): Dict - публичный метод, сериализующий данные связи родитель-ребенок
+serialize_audit_log(data: Dict): Dict - публичный метод, сериализующий данные записи аудита
+deserialize_role(data: Dict): Role - публичный метод, десериализующий данные роли
+deserialize_user(data: Dict): User - публичный метод, десериализующий данные пользователя
+deserialize_category(data: Dict): Category - публичный метод, десериализующий данные категории
+deserialize_brand(data: Dict): Brand - публичный метод, десериализующий данные бренда
+deserialize_product(data: Dict): Product - публичный метод, десериализующий данные товара
+deserialize_product_image(data: Dict): ProductImage - публичный метод, десериализующий данные изображения товара
+deserialize_product_attribute(data: Dict): ProductAttribute - публичный метод, десериализующий данные атрибута товара
+deserialize_address(data: Dict): Address - публичный метод, десериализующий данные адреса
+deserialize_order_status(data: Dict): OrderStatus - публичный метод, десериализующий данные статуса заказа
+deserialize_order(data: Dict): Order - публичный метод, десериализующий данные заказа
+deserialize_order_item(data: Dict): OrderItem - публичный метод, десериализующий данные элемента заказа
+deserialize_review(data: Dict): Review - публичный метод, десериализующий данные отзыва
+deserialize_wishlist(data: Dict): Wishlist - публичный метод, десериализующий данные списка желаемого
+deserialize_cart(data: Dict): Cart - публичный метод, десериализующий данные корзины
+deserialize_parent_child(data: Dict): ParentChild - публичный метод, десериализующий данные связи родитель-ребенок
+deserialize_audit_log(data: Dict): AuditLog - публичный метод, десериализующий данные записи аудита
+validate_role_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных роли
+validate_user_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных пользователя
+validate_category_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных категории
+validate_brand_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных бренда
+validate_product_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных товара
+validate_product_image_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных изображения товара
+validate_product_attribute_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных атрибута товара
+validate_address_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных адреса
+validate_order_status_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных статуса заказа
+validate_order_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных заказа
+validate_order_item_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных элемента заказа
+validate_review_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных отзыва
+validate_wishlist_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных списка желаемого
+validate_cart_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных корзины
+validate_parent_child_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных связи родитель-ребенок
+validate_audit_log_data(data: Dict): Boolean - публичный метод, проверяющий корректность данных записи аудита
+
+Класс ModelViewSetUtility:
+list_roles(request: Request): Response - публичный метод, возвращающий список объектов Role
+create_role(request: Request): Response - публичный метод, создающий новый объект Role
+retrieve_role(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Role
+update_role(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Role
+destroy_role(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Role
+list_users(request: Request): Response - публичный метод, возвращающий список объектов User
+create_user(request: Request): Response - публичный метод, создающий новый объект User
+retrieve_user(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект User
+update_user(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект User
+destroy_user(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект User
+list_categories(request: Request): Response - публичный метод, возвращающий список объектов Category
+create_category(request: Request): Response - публичный метод, создающий новый объект Category
+retrieve_category(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Category
+update_category(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Category
+destroy_category(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Category
+list_brands(request: Request): Response - публичный метод, возвращающий список объектов Brand
+create_brand(request: Request): Response - публичный метод, создающий новый объект Brand
+retrieve_brand(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Brand
+update_brand(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Brand
+destroy_brand(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Brand
+list_products(request: Request): Response - публичный метод, возвращающий список объектов Product
+create_product(request: Request): Response - публичный метод, создающий новый объект Product
+retrieve_product(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Product
+update_product(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Product
+destroy_product(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Product
+list_product_images(request: Request): Response - публичный метод, возвращающий список объектов ProductImage
+create_product_image(request: Request): Response - публичный метод, создающий новый объект ProductImage
+retrieve_product_image(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект ProductImage
+update_product_image(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект ProductImage
+destroy_product_image(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект ProductImage
+list_product_attributes(request: Request): Response - публичный метод, возвращающий список объектов ProductAttribute
+create_product_attribute(request: Request): Response - публичный метод, создающий новый объект ProductAttribute
+retrieve_product_attribute(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект ProductAttribute
+update_product_attribute(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект ProductAttribute
+destroy_product_attribute(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект ProductAttribute
+list_addresses(request: Request): Response - публичный метод, возвращающий список объектов Address
+create_address(request: Request): Response - публичный метод, создающий новый объект Address
+retrieve_address(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Address
+update_address(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Address
+destroy_address(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Address
+list_order_statuses(request: Request): Response - публичный метод, возвращающий список объектов OrderStatus
+create_order_status(request: Request): Response - публичный метод, создающий новый объект OrderStatus
+retrieve_order_status(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект OrderStatus
+update_order_status(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект OrderStatus
+destroy_order_status(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект OrderStatus
+list_orders(request: Request): Response - публичный метод, возвращающий список объектов Order
+create_order(request: Request): Response - публичный метод, создающий новый объект Order
+retrieve_order(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Order
+update_order(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Order
+destroy_order(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Order
+list_order_items(request: Request): Response - публичный метод, возвращающий список объектов OrderItem
+create_order_item(request: Request): Response - публичный метод, создающий новый объект OrderItem
+retrieve_order_item(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект OrderItem
+update_order_item(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект OrderItem
+destroy_order_item(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект OrderItem
+list_reviews(request: Request): Response - публичный метод, возвращающий список объектов Review
+create_review(request: Request): Response - публичный метод, создающий новый объект Review
+retrieve_review(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Review
+update_review(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Review
+destroy_review(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Review
+list_wishlists(request: Request): Response - публичный метод, возвращающий список объектов Wishlist
+create_wishlist(request: Request): Response - публичный метод, создающий новый объект Wishlist
+retrieve_wishlist(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Wishlist
+update_wishlist(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Wishlist
+destroy_wishlist(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Wishlist
+list_carts(request: Request): Response - публичный метод, возвращающий список объектов Cart
+create_cart(request: Request): Response - публичный метод, создающий новый объект Cart
+retrieve_cart(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект Cart
+update_cart(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект Cart
+destroy_cart(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект Cart
+list_parent_child_relations(request: Request): Response - публичный метод, возвращающий список объектов ParentChild
+create_parent_child_relation(request: Request): Response - публичный метод, создающий новый объект ParentChild
+retrieve_parent_child_relation(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект ParentChild
+update_parent_child_relation(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект ParentChild
+destroy_parent_child_relation(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект ParentChild
+list_audit_logs(request: Request): Response - публичный метод, возвращающий список объектов AuditLog
+create_audit_log(request: Request): Response - публичный метод, создающий новый объект AuditLog
+retrieve_audit_log(request: Request, pk: Integer): Response - публичный метод, возвращающий конкретный объект AuditLog
+update_audit_log(request: Request, pk: Integer): Response - публичный метод, обновляющий конкретный объект AuditLog
+destroy_audit_log(request: Request, pk: Integer): Response - публичный метод, удаляющий конкретный объект AuditLog
+get_user_permissions(request: Request): List[Permission] - публичный метод, возвращающий список разрешений
+get_queryset_for_model(model_name: String): QuerySet - публичный метод, возвращающий QuerySet для модели
+apply_filters_to_queryset(queryset: QuerySet, filters: Dict): QuerySet - публичный метод, применяющий фильтры к QuerySet
+paginate_results(results: List, page_size: Integer, page_number: Integer): Dict - публичный метод, выполняющий пагинацию результатов
+handle_api_exception(exception: Exception): Response - публичный метод, обрабатывающий исключения API
+
+Класс ModelFormUtility:
+validate_user_registration_data(data: Dict): Dict - публичный метод, проверяющий корректность данных регистрации пользователя
+validate_user_login_data(data: Dict): Dict - публичный метод, проверяющий корректность данных входа пользователя
+validate_product_search_data(data: Dict): Dict - публичный метод, проверяющий корректность данных поиска товаров
+validate_order_data(data: Dict): Dict - публичный метод, проверяющий корректность данных заказа
+validate_review_data(data: Dict): Dict - публичный метод, проверяющий корректность данных отзыва
+validate_address_data(data: Dict): Dict - публичный метод, проверяющий корректность данных адреса
+validate_wishlist_data(data: Dict): Dict - публичный метод, проверяющий корректность данных списка желаемого
+validate_category_data(data: Dict): Dict - публичный метод, проверяющий корректность данных категории
+validate_brand_data(data: Dict): Dict - публичный метод, проверяющий корректность данных бренда
+validate_product_data(data: Dict): Dict - публичный метод, проверяющий корректность данных товара
+validate_product_image_data(data: Dict): Dict - публичный метод, проверяющий корректность данных изображения товара
+validate_product_attribute_data(data: Dict): Dict - публичный метод, проверяющий корректность данных атрибута товара
+validate_address_management_data(data: Dict): Dict - публичный метод, проверяющий корректность данных управления адресом
+validate_order_status_data(data: Dict): Dict - публичный метод, проверяющий корректность данных статуса заказа
+validate_order_item_data(data: Dict): Dict - публичный метод, проверяющий корректность данных элемента заказа
+validate_parent_child_data(data: Dict): Dict - публичный метод, проверяющий корректность данных связи родитель-ребенок
+validate_audit_log_data(data: Dict): Dict - публичный метод, проверяющий корректность данных записи аудита
+clean_user_registration_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы регистрации пользователя
+clean_user_login_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы входа пользователя
+clean_product_search_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы поиска товаров
+clean_order_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы заказа
+clean_review_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы отзыва
+clean_address_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы адреса
+clean_wishlist_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы списка желаемого
+clean_category_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы категории
+clean_brand_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы бренда
+clean_product_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы товара
+clean_product_image_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы изображения товара
+clean_product_attribute_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы атрибута товара
+clean_address_management_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы управления адресом
+clean_order_status_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы статуса заказа
+clean_order_item_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы элемента заказа
+clean_parent_child_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы связи родитель-ребенок
+clean_audit_log_form(data: Dict): Dict - публичный метод, проверяющий корректность данных формы записи аудита
+save_user_registration_form(data: Dict, commit: Boolean): User - публичный метод, сохраняющий данные формы регистрации пользователя
+save_order_form(data: Dict, user: User, cart_items: QuerySet[Cart]): Order - публичный метод, сохраняющий данные формы заказа
+save_review_form(data: Dict, user: User, product: Product): Review - публичный метод, сохраняющий данные формы отзыва
+save_address_form(data: Dict, user: User): Address - публичный метод, сохраняющий данные формы адреса
+save_wishlist_form(data: Dict, user: User): Wishlist - публичный метод, сохраняющий данные формы списка желаемого
+save_category_form(data: Dict): Category - публичный метод, сохраняющий данные формы категории
+save_brand_form(data: Dict): Brand - публичный метод, сохраняющий данные формы бренда
+save_product_form(data: Dict): Product - публичный метод, сохраняющий данные формы товара
+save_product_image_form(data: Dict): ProductImage - публичный метод, сохраняющий данные формы изображения товара
+save_product_attribute_form(data: Dict): ProductAttribute - публичный метод, сохраняющий данные формы атрибута товара
+save_address_management_form(data: Dict, user: User): Address - публичный метод, сохраняющий данные формы управления адресом
+save_order_status_form(data: Dict): OrderStatus - публичный метод, сохраняющий данные формы статуса заказа
+save_order_item_form(data: Dict): OrderItem - публичный метод, сохраняющий данные формы элемента заказа
+save_parent_child_form(data: Dict): ParentChild - публичный метод, сохраняющий данные формы связи родитель-ребенок
+save_audit_log_form(data: Dict): AuditLog - публичный метод, сохраняющий данные формы записи аудита
+get_form_choices_for_model(model_name: String): Dict - публичный метод, возвращающий варианты выбора для модели
+validate_form_data(form_type: String, data: Dict): Dict - публичный метод, проверяющий корректность данных формы
+handle_form_errors(errors: Dict): Dict - публичный метод, обрабатывающий ошибки формы
+
+PERMISSION CLASSES:
+
+Класс IsAdminOrReadOnly:
+has_permission(request: Request, view: View): Boolean - публичный метод, проверяющий разрешение на уровне запроса
+has_object_permission(request: Request, view: View, obj: Object): Boolean - публичный метод, проверяющий разрешение на уровне объекта
+
+Класс IsOwnerOrAdmin:
+has_permission(request: Request, view: View): Boolean - публичный метод, проверяющий разрешение на уровне запроса
+has_object_permission(request: Request, view: View, obj: Object): Boolean - публичный метод, проверяющий разрешение на уровне объекта
+
+Класс IsParentOrAdmin:
+has_permission(request: Request, view: View): Boolean - публичный метод, проверяющий разрешение на уровне запроса
+has_object_permission(request: Request, view: View, obj: Object): Boolean - публичный метод, проверяющий разрешение на уровне объекта
+
+Класс IsAuthenticatedUser:
+has_permission(request: Request, view: View): Boolean - публичный метод, проверяющий разрешение на уровне запроса
+has_object_permission(request: Request, view: View, obj: Object): Boolean - публичный метод, проверяющий разрешение на уровне объекта
+
+UTILITY CLASSES:
+
+Класс SalesAnalytics:
+get_sales_data(start_date: DateTime, end_date: DateTime): Dict - публичный метод, возвращающий данные о продажах за период
+get_top_products(limit: Integer): QuerySet[Product] - публичный метод, возвращающий список популярных товаров
+get_sales_by_category(): Dict - публичный метод, возвращающий данные о продажах по категориям
+generate_sales_report(format: String): File - публичный метод, генерирующий отчет о продажах
+get_revenue_by_period(period: String): Dict - публичный метод, возвращающий данные о доходах по периодам
+get_order_statistics(): Dict - публичный метод, возвращающий статистику заказов
+
+Класс ProductAnalytics:
+get_product_views(product_id: Integer): Integer - публичный метод, возвращающий количество просмотров товара
+get_product_ratings(product_id: Integer): Dict - публичный метод, возвращающий рейтинги товара
+get_popular_products(limit: Integer): QuerySet[Product] - публичный метод, возвращающий список популярных товаров
+generate_product_report(format: String): File - публичный метод, генерирующий отчет о товарах
+get_inventory_turnover(): Dict - публичный метод, возвращающий данные об оборачиваемости запасов
+get_product_performance(product_id: Integer): Dict - публичный метод, возвращающий данные о производительности товара
+
+Класс ReportGenerator:
+generate_sales_report(start_date: DateTime, end_date: DateTime, format: String): File - публичный метод, генерирующий отчет о продажах
+generate_inventory_report(format: String): File - публичный метод, генерирующий отчет о запасах
+generate_user_report(format: String): File - публичный метод, генерирующий отчет о пользователях
+export_to_csv(data: Dict): File - публичный метод, экспортирующий данные в формате CSV
+export_to_pdf(data: Dict): File - публичный метод, экспортирующий данные в формате PDF
+generate_custom_report(data: Dict, format: String): File - публичный метод, генерирующий пользовательский отчет
+
+Класс PaymentService:
+process_payment(order: Order, payment_data: Dict): Boolean - публичный метод, обрабатывающий платеж
+refund_payment(transaction_id: String): Boolean - публичный метод, возвращающий платеж
+verify_payment(transaction_id: String): Boolean - публичный метод, проверяющий платеж
+get_payment_status(transaction_id: String): String - публичный метод, возвращающий статус платежа
+create_payment_intent(amount: Decimal, currency: String): Dict - публичный метод, создающий намерение платежа
+
+Класс SearchService:
+search_products(query: String): QuerySet[Product] - публичный метод, выполняющий поиск товаров
+search_by_category(category_id: Integer): QuerySet[Product] - публичный метод, выполняющий поиск товаров по категории
+search_by_brand(brand_id: Integer): QuerySet[Product] - публичный метод, выполняющий поиск товаров по бренду
+advanced_search(filters: Dict): QuerySet[Product] - публичный метод, выполняющий расширенный поиск
+autocomplete_search(query: String): List[String] - публичный метод, выполняющий автозаполнение поиска
+
+Класс RecommendationEngine:
+get_recommendations_for_user(user: User): QuerySet[Product] - публичный метод, возвращающий рекомендации для пользователя
+get_related_products(product: Product): QuerySet[Product] - публичный метод, возвращающий связанные товары
+get_trending_products(): QuerySet[Product] - публичный метод, возвращающий популярные товары
+update_user_preferences(user: User, preferences: Dict): Boolean - публичный метод, обновляющий предпочтения пользователя
+get_personalized_recommendations(user: User): QuerySet[Product] - публичный метод, возвращающий персонализированные рекомендации
+
+Класс AuditService:
+log_user_action(user: User, action: String, table: String, record_id: Integer, old_values: Dict, new_values: Dict): AuditLog - публичный метод, записывающий действие пользователя
+get_user_audit_logs(user: User): QuerySet[AuditLog] - публичный метод, возвращающий журнал аудита пользователя
+get_table_audit_logs(table_name: String): QuerySet[AuditLog] - публичный метод, возвращающий журнал аудита таблицы
+generate_audit_report(start_date: DateTime, end_date: DateTime): File - публичный метод, генерирующий отчет аудита
+get_recent_activities(limit: Integer): QuerySet[AuditLog] - публичный метод, возвращающий последние действия
+
+Класс BackupService:
+create_database_backup(): Boolean - публичный метод, создающий резервную копию базы данных
+restore_database_backup(backup_file: File): Boolean - публичный метод, восстанавливающий резервную копию базы данных
+schedule_backup(cron_expression: String): Boolean - публичный метод, планирующий резервное копирование
+list_backups(): List[Backup] - публичный метод, возвращающий список резервных копий
+delete_backup(backup_id: Integer): Boolean - публичный метод, удаляющий резервную копию
+verify_backup(backup_file: File): Boolean - публичный метод, проверяющий резервную копию

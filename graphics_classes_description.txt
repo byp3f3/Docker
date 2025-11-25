@@ -1,0 +1,710 @@
+Graphics/UI Classes Description for JoyBox Toy Store System
+
+TEMPLATE CLASSES:
+
+Интерфейс HomePage:
+Поля:
+WelcomeBanner - секция баннера приветствия
+StatisticsSection - секция статистики
+PopularProductsSection - секция популярных товаров
+CallToActionButtons - кнопки призыва к действию
+Методы:
+LoadPopularProducts(): void - публичный метод, загружающий популярные товары
+DisplayStatistics(): void - публичный метод, отображающий статистику
+
+Интерфейс CatalogPage:
+Поля:
+SearchBar - строка поиска
+FilterPanel - панель фильтров
+SortDropdown - выпадающий список сортировки
+ProductGrid - сетка товаров
+PaginationControls - элементы навигации по страницам
+Методы:
+ApplyFilters(filters: Dict): void - публичный метод, применяющий фильтры
+SortProducts(sort_option: String): void - публичный метод, сортирующий товары
+LoadProducts(page: Integer, filters: Dict): List[Product] - публичный метод, загружающий товары
+ChangePage(page_number: Integer): void - публичный метод, меняющий страницу
+
+Интерфейс ProductDetailPage:
+Поля:
+ProductImages - галерея изображений товара
+ProductTitle - заголовок товара
+ProductPrice - цена товара
+ProductDescription - описание товара
+AddToCartButton - кнопка добавления в корзину
+WishlistButton - кнопка добавления в список желаемого
+ReviewSection - секция отзывов
+RelatedProducts - карусель связанных товаров
+Методы:
+AddToCart(product_id: Integer, quantity: Integer): Boolean - публичный метод, добавляющий товар в корзину
+ToggleWishlist(product_id: Integer): Boolean - публичный метод, переключающий список желаемого
+SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean - публичный метод, отправляющий отзыв
+LoadRelatedProducts(product_id: Integer): List[Product] - публичный метод, загружающий связанные товары
+
+Интерфейс LoginPage:
+Поля:
+EmailInput - поле ввода email
+PasswordInput - поле ввода пароля
+LoginButton - кнопка входа
+ForgotPasswordLink - ссылка на восстановление пароля
+RegisterLink - ссылка на регистрацию
+Методы:
+ValidateLogin(email: String, password: String): Boolean - публичный метод, проверяющий данные для входа
+ProcessLogin(email: String, password: String): Boolean - публичный метод, обрабатывающий вход
+RedirectToRegister(): void - публичный метод, перенаправляющий на регистрацию
+
+Интерфейс RegisterPage:
+Поля:
+FirstNameInput - поле ввода имени
+LastNameInput - поле ввода фамилии
+EmailInput - поле ввода email
+PasswordInput - поле ввода пароля
+ConfirmPasswordInput - поле подтверждения пароля
+PhoneInput - поле ввода телефона
+BirthDateInput - поле ввода даты рождения
+RegisterButton - кнопка регистрации
+LoginLink - ссылка на вход
+Методы:
+ValidateRegistration(first_name: String, last_name: String, email: String, password: String, confirm_password: String, phone: String, birth_date: Date): Boolean - публичный метод, проверяющий данные регистрации
+ProcessRegistration(first_name: String, last_name: String, email: String, password: String, phone: String, birth_date: Date): Boolean - публичный метод, обрабатывающий регистрацию
+RedirectToLogin(): void - публичный метод, перенаправляющий на вход
+
+Интерфейс ProfilePage:
+Поля:
+PersonalInfoSection - секция персональной информации
+AddressBookSection - секция адресной книги
+OrderHistorySection - секция истории заказов
+ChildrenAccountsSection - секция аккаунтов детей
+SaveButton - кнопка сохранения
+Методы:
+LoadProfileData(user_id: Integer): User - публичный метод, загружающий данные профиля
+UpdateProfile(user_data: Dict): Boolean - публичный метод, обновляющий профиль
+AddAddress(address_data: Dict): Boolean - публичный метод, добавляющий адрес
+ViewOrderDetails(order_id: Integer): Order - публичный метод, отображающий детали заказа
+
+Интерфейс ProfileEditPage:
+Поля:
+PersonalInfoForm - форма персональной информации
+SaveButton - кнопка сохранения
+CancelButton - кнопка отмены
+Методы:
+LoadProfileData(user_id: Integer): User - публичный метод, загружающий данные профиля
+SaveChanges(user_data: Dict): Boolean - публичный метод, сохраняющий изменения
+CancelEdit(): void - публичный метод, отменяющий редактирование
+
+Интерфейс CartPage:
+Поля:
+CartItemsList - список элементов корзины
+QuantitySelectors - селекторы количества
+RemoveButtons - кнопки удаления
+TotalAmount - общая сумма
+CheckoutButton - кнопка оформления заказа
+ContinueShoppingButton - кнопка продолжения покупок
+Методы:
+UpdateQuantity(item_id: Integer, quantity: Integer): Boolean - публичный метод, обновляющий количество
+RemoveItem(item_id: Integer): Boolean - публичный метод, удаляющий элемент
+CalculateTotal(): Decimal - публичный метод, вычисляющий общую сумму
+ProceedToCheckout(): void - публичный метод, переходящий к оформлению заказа
+
+Интерфейс CheckoutPage:
+Поля:
+ShippingAddressForm - форма адреса доставки
+DeliveryOptions - опции доставки
+PaymentMethodForm - форма метода оплаты
+OrderSummary - сводка заказа
+PlaceOrderButton - кнопка размещения заказа
+Методы:
+ValidateShipping(address_data: Dict): Boolean - публичный метод, проверяющий адрес доставки
+SelectDelivery(delivery_type: String): void - публичный метод, выбирающий тип доставки
+ProcessPayment(payment_data: Dict): Boolean - публичный метод, обрабатывающий платеж
+PlaceOrder(order_data: Dict): Order - публичный метод, размещающий заказ
+
+Интерфейс OrderHistoryPage:
+Поля:
+OrderList - список заказов
+OrderFilters - фильтры заказов
+OrderDetailsModal - модальное окно деталей заказа
+Методы:
+LoadOrders(user_id: Integer, filters: Dict): List[Order] - публичный метод, загружающий заказы
+FilterOrders(filters: Dict): List[Order] - публичный метод, фильтрующий заказы
+ShowOrderDetails(order_id: Integer): Order - публичный метод, отображающий детали заказа
+
+Интерфейс OrderDetailPage:
+Поля:
+OrderInfo - информация о заказе
+OrderItems - элементы заказа
+OrderStatus - статус заказа
+BackButton - кнопка возврата
+Методы:
+LoadOrderDetails(order_id: Integer): Order - публичный метод, загружающий детали заказа
+PrintOrder(order_id: Integer): Boolean - публичный метод, печатающий заказ
+ContactSupport(order_id: Integer): void - публичный метод, связывающийся со службой поддержки
+
+Интерфейс WishlistPage:
+Поля:
+WishlistItems - элементы списка желаемого
+AddToCartButtons - кнопки добавления в корзину
+RemoveButtons - кнопки удаления
+ShareWishlistButton - кнопка поделиться списком желаемого
+Методы:
+LoadWishlist(user_id: Integer): List[WishlistItem] - публичный метод, загружающий список желаемого
+AddToCart(product_id: Integer, quantity: Integer): Boolean - публичный метод, добавляющий в корзину
+RemoveItem(item_id: Integer): Boolean - публичный метод, удаляющий элемент
+ShareWishlist(user_id: Integer): String - публичный метод, создающий ссылку для поделиться
+
+Интерфейс ChildWishlistPage:
+Поля:
+ChildNameHeader - заголовок с именем ребенка
+WishlistItems - элементы списка желаемого
+AddToCartButtons - кнопки добавления в корзину
+BackToParentButton - кнопка возврата к родителю
+Методы:
+LoadChildWishlist(child_id: Integer): List[WishlistItem] - публичный метод, загружающий список желаемого ребенка
+AddToParentCart(product_id: Integer, quantity: Integer): Boolean - публичный метод, добавляющий в корзину родителя
+ReturnToParentView(): void - публичный метод, возвращающий к виду родителя
+
+Интерфейс ChildrenManagementPage:
+Поля:
+ChildrenList - список детей
+AddChildButton - кнопка добавления ребенка
+EditChildButtons - кнопки редактирования ребенка
+RemoveChildButtons - кнопки удаления ребенка
+Методы:
+LoadChildren(parent_id: Integer): List[User] - публичный метод, загружающий детей
+AddChild(child_data: Dict): Boolean - публичный метод, добавляющий ребенка
+EditChild(child_id: Integer, child_data: Dict): Boolean - публичный метод, редактирующий ребенка
+RemoveChild(child_id: Integer): Boolean - публичный метод, удаляющий ребенка
+
+Интерфейс AddChildPage:
+Поля:
+ChildInfoForm - форма информации о ребенке
+SaveButton - кнопка сохранения
+CancelButton - кнопка отмены
+Методы:
+ValidateChildInfo(first_name: String, last_name: String, email: String, birth_date: Date): Boolean - публичный метод, проверяющий информацию о ребенке
+SaveChild(child_data: Dict): Boolean - публичный метод, сохраняющий информацию о ребенке
+CancelAdd(): void - публичный метод, отменяющий добавление
+
+Интерфейс ReviewsPage:
+Поля:
+ProductInfo - информация о товаре
+ReviewList - список отзывов
+ReviewForm - форма отзыва
+RatingSelector - селектор рейтинга
+Методы:
+LoadReviews(product_id: Integer): List[Review] - публичный метод, загружающий отзывы
+SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean - публичный метод, отправляющий отзыв
+EditReview(review_id: Integer, rating: Integer, review_text: String): Boolean - публичный метод, редактирующий отзыв
+
+Интерфейс WriteReviewPage:
+Поля:
+ProductInfo - информация о товаре
+ReviewForm - форма отзыва
+RatingInput - ввод рейтинга
+SubmitButton - кнопка отправки
+CancelButton - кнопка отмены
+Методы:
+LoadProductInfo(product_id: Integer): Product - публичный метод, загружающий информацию о товаре
+SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean - публичный метод, отправляющий отзыв
+CancelReview(): void - публичный метод, отменяющий отзыв
+
+Интерфейс SearchResultsPage:
+Поля:
+SearchQueryDisplay - отображение поискового запроса
+ResultsCount - количество результатов
+ResultsGrid - сетка результатов
+RefinementFilters - фильтры уточнения
+Pagination - пагинация
+Методы:
+DisplayResults(query: String, page: Integer): List[Product] - публичный метод, отображающий результаты
+ApplyRefinements(filters: Dict): List[Product] - публичный метод, применяющий уточнения
+ChangePage(page_number: Integer): void - публичный метод, меняющий страницу
+
+Интерфейс CategoryPage:
+Поля:
+CategoryInfo - информация о категории
+ProductGrid - сетка товаров
+FilterPanel - панель фильтров
+SortDropdown - выпадающий список сортировки
+Методы:
+LoadCategoryProducts(category_id: Integer, page: Integer): List[Product] - публичный метод, загружающий товары категории
+ApplyFilters(filters: Dict): List[Product] - публичный метод, применяющий фильтры
+SortProducts(sort_option: String): List[Product] - публичный метод, сортирующий товары
+
+Интерфейс BrandPage:
+Поля:
+BrandInfo - информация о бренде
+ProductGrid - сетка товаров
+FilterPanel - панель фильтров
+SortDropdown - выпадающий список сортировки
+Методы:
+LoadBrandProducts(brand_id: Integer, page: Integer): List[Product] - публичный метод, загружающий товары бренда
+ApplyFilters(filters: Dict): List[Product] - публичный метод, применяющий фильтры
+SortProducts(sort_option: String): List[Product] - публичный метод, сортирующий товары
+
+Интерфейс FAQPage:
+Поля:
+FAQList - список FAQ
+SearchBox - поле поиска
+ContactButton - кнопка контакта
+Методы:
+LoadFAQs(): List[FAQ] - публичный метод, загружающий FAQ
+SearchFAQs(query: String): List[FAQ] - публичный метод, ищущий FAQ
+ContactSupport(): void - публичный метод, связывающийся со службой поддержки
+
+Интерфейс TermsPage:
+Поля:
+TermsContent - содержимое условий
+LastUpdated - дата последнего обновления
+PrintButton - кнопка печати
+Методы:
+LoadTerms(): String - публичный метод, загружающий условия
+PrintTerms(): Boolean - публичный метод, печатающий условия
+
+Интерфейс AdminDashboardPage:
+Поля:
+SummaryCards - карточки сводки
+RecentActivity - последняя активность
+QuickActions - быстрые действия
+AnalyticsCharts - графики аналитики
+Методы:
+LoadDashboardData(): Dict - публичный метод, загружающий данные дашборда
+NavigateToSection(section: String): void - публичный метод, навигирующий к секции
+RefreshData(): void - публичный метод, обновляющий данные
+
+Интерфейс AdminUsersPage:
+Поля:
+UserTable - таблица пользователей
+RoleFilter - фильтр ролей
+SearchBox - поле поиска
+AddUserButton - кнопка добавления пользователя
+EditUserButtons - кнопки редактирования пользователя
+Методы:
+LoadUsers(filters: Dict): List[User] - публичный метод, загружающий пользователей
+FilterUsers(filters: Dict): List[User] - публичный метод, фильтрующий пользователей
+AddUser(user_data: Dict): Boolean - публичный метод, добавляющий пользователя
+EditUser(user_id: Integer, user_data: Dict): Boolean - публичный метод, редактирующий пользователя
+
+Интерфейс AdminUserDetailPage:
+Поля:
+UserInfo - информация о пользователе
+UserOrders - заказы пользователя
+UserActivity - активность пользователя
+EditButton - кнопка редактирования
+BackButton - кнопка возврата
+Методы:
+LoadUserDetails(user_id: Integer): User - публичный метод, загружающий детали пользователя
+EditUser(user_id: Integer): void - публичный метод, редактирующий пользователя
+ViewOrderDetails(order_id: Integer): Order - публичный метод, отображающий детали заказа
+
+Интерфейс AdminProductsPage:
+Поля:
+ProductTable - таблица товаров
+CategoryFilter - фильтр категорий
+AddProductButton - кнопка добавления товара
+EditProductButtons - кнопки редактирования товара
+DeleteProductButtons - кнопки удаления товара
+Методы:
+LoadProducts(filters: Dict): List[Product] - публичный метод, загружающий товары
+FilterProducts(filters: Dict): List[Product] - публичный метод, фильтрующий товары
+AddProduct(product_data: Dict): Boolean - публичный метод, добавляющий товар
+EditProduct(product_id: Integer, product_data: Dict): Boolean - публичный метод, редактирующий товар
+DeleteProduct(product_id: Integer): Boolean - публичный метод, удаляющий товар
+
+Интерфейс AdminProductFormPage:
+Поля:
+ProductForm - форма товара
+NameInput - ввод названия
+DescriptionInput - ввод описания
+PriceInput - ввод цены
+SaveButton - кнопка сохранения
+CancelButton - кнопка отмены
+Методы:
+LoadProductData(product_id: Integer): Product - публичный метод, загружающий данные товара
+ValidateProduct(product_data: Dict): Boolean - публичный метод, проверяющий товар
+SaveProduct(product_data: Dict): Boolean - публичный метод, сохраняющий товар
+CancelEdit(): void - публичный метод, отменяющий редактирование
+
+Интерфейс AdminCategoriesPage:
+Поля:
+CategoryList - список категорий
+AddCategoryForm - форма добавления категории
+EditButtons - кнопки редактирования
+DeleteButtons - кнопки удаления
+Методы:
+LoadCategories(): List[Category] - публичный метод, загружающий категории
+AddCategory(category_data: Dict): Boolean - публичный метод, добавляющий категорию
+EditCategory(category_id: Integer, category_data: Dict): Boolean - публичный метод, редактирующий категорию
+DeleteCategory(category_id: Integer): Boolean - публичный метод, удаляющий категорию
+
+Интерфейс AdminBrandsPage:
+Поля:
+BrandList - список брендов
+AddBrandForm - форма добавления бренда
+EditButtons - кнопки редактирования
+DeleteButtons - кнопки удаления
+Методы:
+LoadBrands(): List[Brand] - публичный метод, загружающий бренды
+AddBrand(brand_data: Dict): Boolean - публичный метод, добавляющий бренд
+EditBrand(brand_id: Integer, brand_data: Dict): Boolean - публичный метод, редактирующий бренд
+DeleteBrand(brand_id: Integer): Boolean - публичный метод, удаляющий бренд
+
+Интерфейс AdminOrdersPage:
+Поля:
+OrderTable - таблица заказов
+StatusFilter - фильтр статусов
+OrderDetailsModal - модальное окно деталей заказа
+UpdateStatusButtons - кнопки обновления статуса
+Методы:
+LoadOrders(filters: Dict): List[Order] - публичный метод, загружающий заказы
+FilterOrders(filters: Dict): List[Order] - публичный метод, фильтрующий заказы
+UpdateOrderStatus(order_id: Integer, status: String): Boolean - публичный метод, обновляющий статус заказа
+ViewOrderDetails(order_id: Integer): Order - публичный метод, отображающий детали заказа
+
+Интерфейс AdminOrderDetailPage:
+Поля:
+OrderInfo - информация о заказе
+OrderItems - элементы заказа
+StatusHistory - история статусов
+UpdateStatusForm - форма обновления статуса
+BackButton - кнопка возврата
+Методы:
+LoadOrderDetails(order_id: Integer): Order - публичный метод, загружающий детали заказа
+UpdateOrderStatus(order_id: Integer, status: String): Boolean - публичный метод, обновляющий статус заказа
+PrintOrder(order_id: Integer): Boolean - публичный метод, печатающий заказ
+
+Интерфейс AdminReviewsPage:
+Поля:
+ReviewTable - таблица отзывов
+ProductFilter - фильтр товаров
+StatusFilter - фильтр статусов
+ModerateButtons - кнопки модерации
+ReviewDetailsModal - модальное окно деталей отзыва
+Методы:
+LoadReviews(filters: Dict): List[Review] - публичный метод, загружающий отзывы
+FilterReviews(filters: Dict): List[Review] - публичный метод, фильтрующий отзывы
+ModerateReview(review_id: Integer, action: String): Boolean - публичный метод, модерирующий отзыв
+ViewReviewDetails(review_id: Integer): Review - публичный метод, отображающий детали отзыва
+
+Интерфейс AdminAuditPage:
+Поля:
+AuditLogTable - таблица журнала аудита
+DateFilter - фильтр дат
+UserFilter - фильтр пользователей
+ActionFilter - фильтр действий
+ExportButton - кнопка экспорта
+Методы:
+LoadAuditLogs(filters: Dict): List[AuditLog] - публичный метод, загружающий журнал аудита
+FilterLogs(filters: Dict): List[AuditLog] - публичный метод, фильтрующий журнал
+ExportLogs(format: String): File - публичный метод, экспортирующий журнал
+
+Интерфейс AdminReportsPage:
+Поля:
+ReportSelector - селектор отчетов
+DateRangePicker - выбор диапазона дат
+GenerateButton - кнопка генерации
+ReportDisplay - отображение отчета
+ExportButton - кнопка экспорта
+Методы:
+LoadReportOptions(): List[String] - публичный метод, загружающий опции отчетов
+GenerateReport(report_type: String, date_range: Dict): Report - публичный метод, генерирующий отчет
+ExportReport(report_data: Report, format: String): File - публичный метод, экспортирующий отчет
+
+Интерфейс AdminSettingsPage:
+Поля:
+GeneralSettings - общие настройки
+SecuritySettings - настройки безопасности
+SaveButton - кнопка сохранения
+ResetButton - кнопка сброса
+Методы:
+LoadSettings(): Dict - публичный метод, загружающий настройки
+SaveSettings(settings_data: Dict): Boolean - публичный метод, сохраняющий настройки
+ResetSettings(): void - публичный метод, сбрасывающий настройки
+
+Интерфейс ManagerDashboardPage:
+Поля:
+SalesSummary - сводка продаж
+OrderQueue - очередь заказов
+ProductPerformance - производительность товаров
+QuickActions - быстрые действия
+Методы:
+LoadDashboardData(): Dict - публичный метод, загружающий данные дашборда
+NavigateToSection(section: String): void - публичный метод, навигирующий к секции
+RefreshData(): void - публичный метод, обновляющий данные
+
+Интерфейс ManagerProductsPage:
+Поля:
+ProductTable - таблица товаров
+StockFilter - фильтр запасов
+LowStockAlert - оповещение о низком запасе
+EditProductButtons - кнопки редактирования товара
+Методы:
+LoadProducts(filters: Dict): List[Product] - публичный метод, загружающий товары
+FilterProducts(filters: Dict): List[Product] - публичный метод, фильтрующий товары
+EditProduct(product_id: Integer): void - публичный метод, редактирующий товар
+
+Интерфейс ManagerOrdersPage:
+Поля:
+OrderQueue - очередь заказов
+StatusUpdateForm - форма обновления статуса
+OrderDetailsModal - модальное окно деталей заказа
+ProcessOrderButtons - кнопки обработки заказа
+Методы:
+LoadOrders(filters: Dict): List[Order] - публичный метод, загружающий заказы
+UpdateOrderStatus(order_id: Integer, status: String): Boolean - публичный метод, обновляющий статус заказа
+ProcessOrder(order_id: Integer): Boolean - публичный метод, обрабатывающий заказ
+ViewOrderDetails(order_id: Integer): Order - публичный метод, отображающий детали заказа
+
+Интерфейс ManagerReviewsPage:
+Поля:
+ReviewQueue - очередь отзывов
+ApprovalButtons - кнопки одобрения
+ReviewDetailsModal - модальное окно деталей отзыва
+FilterOptions - опции фильтрации
+Методы:
+LoadReviews(filters: Dict): List[Review] - публичный метод, загружающий отзывы
+ApproveReview(review_id: Integer): Boolean - публичный метод, одобряющий отзыв
+RejectReview(review_id: Integer): Boolean - публичный метод, отклоняющий отзыв
+ViewReviewDetails(review_id: Integer): Review - публичный метод, отображающий детали отзыва
+
+Интерфейс ManagerAnalyticsPage:
+Поля:
+SalesCharts - графики продаж
+FilterControls - элементы управления фильтрами
+ReportGenerator - генератор отчетов
+ExportButtons - кнопки экспорта
+Методы:
+LoadAnalyticsData(filters: Dict): Dict - публичный метод, загружающий данные аналитики
+ApplyFilters(filters: Dict): Dict - публичный метод, применяющий фильтры
+GenerateReport(report_params: Dict): Report - публичный метод, генерирующий отчет
+ExportData(data: Dict, format: String): File - публичный метод, экспортирующий данные
+
+Интерфейс Error404Page:
+Поля:
+ErrorMessage - сообщение об ошибке
+ErrorCode - код ошибки
+HomeButton - кнопка домой
+BackButton - кнопка назад
+Методы:
+GoHome(): void - публичный метод, переходящий на главную
+GoBack(): void - публичный метод, возвращающий назад
+
+Интерфейс Error403Page:
+Поля:
+ErrorMessage - сообщение об ошибке
+ErrorCode - код ошибки
+HomeButton - кнопка домой
+LoginButton - кнопка входа
+Методы:
+GoHome(): void - публичный метод, переходящий на главную
+GoToLogin(): void - публичный метод, переходящий к входу
+
+Интерфейс Error500Page:
+Поля:
+ErrorMessage - сообщение об ошибке
+ErrorCode - код ошибки
+HomeButton - кнопка домой
+ContactSupportButton - кнопка контакта со службой поддержки
+Методы:
+GoHome(): void - публичный метод, переходящий на главную
+ContactSupport(): void - публичный метод, связывающийся со службой поддержки
+
+UI COMPONENT CLASSES:
+
+Интерфейс NavigationBar:
+Поля:
+menu_items - список пунктов меню
+logo - изображение логотипа
+nav_links - ссылки навигации
+user_menu - выпадающее меню пользователя
+Методы:
+render(): HTML - публичный метод, отображающий навигационную панель
+highlight_active_page(current_page: String): Void - публичный метод, выделяющий активную страницу
+toggle_mobile_menu(): Void - публичный метод, переключающий мобильное меню
+
+Интерфейс ProductCard:
+Поля:
+product - товар
+image - изображение
+title - заголовок
+price - цена
+rating - рейтинг
+Методы:
+render(): HTML - публичный метод, отображающий карточку товара
+get_display_price(): String - публичный метод, возвращающий отображаемую цену
+get_rating_stars(): String - публичный метод, возвращающий звезды рейтинга
+get_image_url(): String - публичный метод, возвращающий URL изображения
+
+Интерфейс ShoppingCartWidget:
+Поля:
+user - пользователь
+item_count - количество элементов
+total_amount - общая сумма
+dropdown - выпадающий список
+Методы:
+get_item_count(): Integer - публичный метод, возвращающий количество элементов
+render(): HTML - публичный метод, отображающий виджет корзины
+update_display(): Void - публичный метод, обновляющий отображение
+toggle_visibility(): Void - публичный метод, переключающий видимость
+
+Интерфейс SearchBar:
+Поля:
+placeholder_text - текст-заполнитель
+search_input - поле ввода поиска
+search_button - кнопка поиска
+clear_button - кнопка очистки
+Методы:
+render(): HTML - публичный метод, отображающий строку поиска
+handle_search(query: String): Void - публичный метод, обрабатывающий поиск
+clear_search(): Void - публичный метод, очищающий поиск
+focus(): Void - публичный метод, устанавливающий фокус
+
+Интерфейс FilterPanel:
+Поля:
+filters - фильтры
+category_filter - фильтр категорий
+price_filter - фильтр цены
+brand_filter - фильтр брендов
+age_filter - фильтр возраста
+Методы:
+render(): HTML - публичный метод, отображающий панель фильтров
+apply_filters(): Void - публичный метод, применяющий фильтры
+reset_filters(): Void - публичный метод, сбрасывающий фильтры
+toggle_filter_section(): Void - публичный метод, переключающий секцию фильтров
+
+Интерфейс RatingComponent:
+Поля:
+rating - рейтинг
+max_rating - максимальный рейтинг
+stars - звезды
+rating_text - текст рейтинга
+Методы:
+render(): HTML - публичный метод, отображающий компонент рейтинга
+get_star_html(): String - публичный метод, возвращающий HTML звезд
+set_rating(new_rating: Integer): Void - публичный метод, устанавливающий рейтинг
+
+Интерфейс ReviewComponent:
+Поля:
+review - отзыв
+user_avatar - аватар пользователя
+user_name - имя пользователя
+rating - рейтинг
+review_text - текст отзыва
+Методы:
+render(): HTML - публичный метод, отображающий компонент отзыва
+get_user_avatar(): String - публичный метод, возвращающий аватар пользователя
+format_date(date: DateTime): String - публичный метод, форматирующий дату
+
+Интерфейс WishlistButton:
+Поля:
+product - товар
+user - пользователь
+is_in_wishlist - находится ли в списке желаемого
+button - кнопка
+Методы:
+render(): HTML - публичный метод, отображающий кнопку списка желаемого
+toggle_wishlist(): Void - публичный метод, переключающий список желаемого
+
+Интерфейс QuantitySelector:
+Поля:
+min_value - минимальное значение
+max_value - максимальное значение
+current_value - текущее значение
+decrement_button - кнопка уменьшения
+increment_button - кнопка увеличения
+input_field - поле ввода
+Методы:
+render(): HTML - публичный метод, отображающий селектор количества
+increase(): Void - публичный метод, увеличивающий значение
+decrease(): Void - публичный метод, уменьшающий значение
+set_value(value: Integer): Void - публичный метод, устанавливающий значение
+
+Интерфейс Pagination:
+Поля:
+current_page - текущая страница
+total_pages - всего страниц
+prev_button - кнопка предыдущей страницы
+next_button - кнопка следующей страницы
+page_numbers - номера страниц
+Методы:
+render(): HTML - публичный метод, отображающий пагинацию
+go_to_page(page: Integer): Void - публичный метод, переходящий к странице
+next_page(): Void - публичный метод, переходящий к следующей странице
+previous_page(): Void - публичный метод, переходящий к предыдущей странице
+
+Интерфейс AlertMessage:
+Поля:
+message - сообщение
+type - тип
+is_visible - видимость
+close_button - кнопка закрытия
+Методы:
+render(): HTML - публичный метод, отображающий сообщение
+show(message: String, type: String): Void - публичный метод, отображающий сообщение
+hide(): Void - публичный метод, скрывающий сообщение
+
+JAVASCRIPT CLASSES:
+
+Интерфейс ThemeSwitcher:
+Поля:
+current_theme - текущая тема
+theme_toggle - переключатель темы
+Методы:
+toggle_theme(): Void - публичный метод, переключающий тему
+set_theme(theme_name: String): Void - публичный метод, устанавливающий тему
+get_current_theme(): String - публичный метод, возвращающий текущую тему
+apply_theme_styles(): Void - публичный метод, применяющий стили темы
+
+Интерфейс ProductGallery:
+Поля:
+images - изображения
+current_image_index - индекс текущего изображения
+main_image - главное изображение
+thumbnails - миниатюры
+Методы:
+next_image(): Void - публичный метод, переходящий к следующему изображению
+previous_image(): Void - публичный метод, переходящий к предыдущему изображению
+set_image(index: Integer): Void - публичный метод, устанавливающий изображение
+render_thumbnails(): Void - публичный метод, отображающий миниатюры
+
+Интерфейс CartManager:
+Поля:
+cart_items - элементы корзины
+total_amount - общая сумма
+item_count - количество элементов
+Методы:
+add_to_cart(product_id: Integer, quantity: Integer): Void - публичный метод, добавляющий в корзину
+remove_from_cart(item_id: Integer): Void - публичный метод, удаляющий из корзины
+update_quantity(item_id: Integer, quantity: Integer): Void - публичный метод, обновляющий количество
+get_cart_total(): Decimal - публичный метод, возвращающий общую сумму корзины
+refresh_cart_display(): Void - публичный метод, обновляющий отображение корзины
+
+Интерфейс WishlistManager:
+Поля:
+wishlist_items - элементы списка желаемого
+item_count - количество элементов
+Методы:
+add_to_wishlist(product_id: Integer): Void - публичный метод, добавляющий в список желаемого
+remove_from_wishlist(item_id: Integer): Void - публичный метод, удаляющий из списка желаемого
+is_in_wishlist(product_id: Integer): Boolean - публичный метод, проверяющий наличие в списке желаемого
+refresh_wishlist_display(): Void - публичный метод, обновляющий отображение списка желаемого
+
+Интерфейс SearchAutocomplete:
+Поля:
+suggestions - предложения
+input_field - поле ввода
+suggestion_list - список предложений
+Методы:
+render_suggestions(): Void - публичный метод, отображающий предложения
+fetch_suggestions(query: String): Void - публичный метод, получаящий предложения
+select_suggestion(suggestion: String): Void - публичный метод, выбирающий предложение
+
+Интерфейс ResponsiveMenu:
+Поля:
+is_mobile_menu_open - открыто ли мобильное меню
+menu_button - кнопка меню
+menu_container - контейнер меню
+Методы:
+toggle_mobile_menu(): Void - публичный метод, переключающий мобильное меню
+close_mobile_menu(): Void - публичный метод, закрывающий мобильное меню
+open_mobile_menu(): Void - публичный метод, открывающий мобильное меню

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JoyBox - Магазин игрушек{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #dc2626;
+            --gold-color: #f59e0b;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            box-shadow: 0 2px 10px rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--gold-color));
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            color: white;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            font-size: 2rem;
+            letter-spacing: -0.01em;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            padding: 60px 0 30px;
+            position: relative;
+            margin-top: auto;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--gold-color));
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand text-white" href="{% url 'info_view' %}">
+                <i class="fas fa-gift me-2"></i>JoyBox
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white {% if request.resolver_match.url_name == 'info_view' %}active{% endif %}" href="{% url 'info_view' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}" href="{% url 'catalog' %}">Каталог</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav" id="authNav">
+                    <!-- Auth links will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main style="margin-top: 80px; margin-bottom: 80px;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h5><i class="fas fa-gift me-2"></i>JoyBox</h5>
+                    <p>Магазин игрушек, где каждый ребенок найдет свою мечту. Качество, безопасность и радость в каждом товаре.</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>Каталог</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Конструкторы</a></li>
+                        <li><a href="#" class="text-light">Куклы</a></li>
+                        <li><a href="#" class="text-light">Машинки</a></li>
+                        <li><a href="#" class="text-light">Настольные игры</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6>Помощь</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Доставка</a></li>
+                        <li><a href="#" class="text-light">Оплата</a></li>
+                        <li><a href="#" class="text-light">Возврат</a></li>
+                        <li><a href="#" class="text-light">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2024 JoyBox. Все права защищены.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-light me-3">Политика конфиденциальности</a>
+                    <a href="#" class="text-light">Условия использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+    <script>
+        // Check authentication status and update navbar
+        document.addEventListener('DOMContentLoaded', function() {
+            const authNav = document.getElementById('authNav');
+            const mainNav = document.querySelector('.navbar-nav.me-auto'); // Main navigation
+            const authToken = localStorage.getItem('authToken');
+            
+            if (authToken) {
+                // User is logged in, check their role
+                fetch('/api/auth/profile/', {
+                    headers: {
+                        'Authorization': `Token ${authToken}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.roleName === 'Администратор' || data.roleName === 'Менеджер') {
+                        // Show admin panel link for admin/manager users
+                        authNav.innerHTML = `
+                            <a class="btn btn-light me-2" href="/admin-panel/">Панель администратора</a>
+                            <a class="btn btn-light me-2" href="/profile/">Профиль</a>
+                            <button class="btn btn-outline-light" onclick="logout()">Выйти</button>
+                        `;
+                        // Hide main page and catalog links for admin/manager
+                        if (mainNav) {
+                            mainNav.style.display = 'none';
+                        }
+                        // Only redirect to admin panel if we're not already on the admin panel page
+                        if (window.location.pathname !== '/admin-panel/' && 
+                            window.location.pathname !== '/profile/') {
+                            window.location.href = '/admin-panel/';
+                        }
+                    } else {
+                        // Show regular profile link for other users
+                        authNav.innerHTML = `
+                            <a class="btn btn-light me-2" href="/profile/">Профиль</a>
+                            <button class="btn btn-outline-light" onclick="logout()">Выйти</button>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    // If there's an error fetching profile, remove the token and redirect to login
+                    localStorage.removeItem('authToken');
+                    authNav.innerHTML = `
+                        <a class="btn btn-light me-2" href="/login/">Вход</a>
+                        <a class="btn btn-outline-light" href="/register/">Регистрация</a>
+                    `;
+                });
+            } else {
+                // User is not logged in
+                authNav.innerHTML = `
+                    <a class="btn btn-light me-2" href="/login/">Вход</a>
+                    <a class="btn btn-outline-light" href="/register/">Регистрация</a>
+                `;
+            }
+        });
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+Graphics/UI Classes for JoyBox Toy Store System
+
+1. Templates (HTML Files) - COMPLETE LIST - 44
+   HomePage (info.html)
+   --------------------------
++ WelcomeBanner: section
++ StatisticsSection: section
++ PopularProductsSection: section
++ CallToActionButtons: buttons
+   --------------------------
++ LoadPopularProducts(): void
++ DisplayStatistics(): void
+
+   CatalogPage (catalog.html)
+   --------------------------
++ SearchBar: input
++ FilterPanel: panel
++ SortDropdown: dropdown
++ ProductGrid: grid
++ PaginationControls: navigation
+   --------------------------
++ ApplyFilters(filters: Dict): void
++ SortProducts(sort_option: String): void
++ LoadProducts(page: Integer, filters: Dict): List[Product]
++ ChangePage(page_number: Integer): void
+
+   ProductDetailPage (product_detail.html)
+   --------------------------
++ ProductImages: gallery
++ ProductTitle: heading
++ ProductPrice: text
++ ProductDescription: text
++ AddToCartButton: button
++ WishlistButton: button
++ ReviewSection: section
++ RelatedProducts: carousel
+   --------------------------
++ AddToCart(product_id: Integer, quantity: Integer): Boolean
++ ToggleWishlist(product_id: Integer): Boolean
++ SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean
++ LoadRelatedProducts(product_id: Integer): List[Product]
+
+   LoginPage
+   --------------------------
+   + EmailInput: text
+   + PasswordInput: password
+   + LoginButton: button
+   + ForgotPasswordLink: link
+   + RegisterLink: link
+   --------------------------
++ ValidateLogin(email: String, password: String): Boolean
++ ProcessLogin(email: String, password: String): Boolean
++ RedirectToRegister(): void
+
+   RegisterPage
+   --------------------------
++ FirstNameInput: text
++ LastNameInput: text
++ EmailInput: text
++ PasswordInput: password
++ ConfirmPasswordInput: password
++ PhoneInput: text
++ BirthDateInput: date
++ RegisterButton: button
++ LoginLink: link
+   --------------------------
++ ValidateRegistration(first_name: String, last_name: String, email: String, password: String, confirm_password: String, phone: String, birth_date: Date): Boolean
++ ProcessRegistration(first_name: String, last_name: String, email: String, password: String, phone: String, birth_date: Date): Boolean
++ RedirectToLogin(): void
+
+   ProfilePage
+   --------------------------
++ PersonalInfoSection: form
++ AddressBookSection: list
++ OrderHistorySection: list
++ ChildrenAccountsSection: list
++ SaveButton: button
+   --------------------------
++ LoadProfileData(user_id: Integer): User
++ UpdateProfile(user_data: Dict): Boolean
++ AddAddress(address_data: Dict): Boolean
++ ViewOrderDetails(order_id: Integer): Order
+
+   ProfileEditPage
+   --------------------------
++ PersonalInfoForm: form
++ SaveButton: button
++ CancelButton: button
+   --------------------------
++ LoadProfileData(user_id: Integer): User
++ SaveChanges(user_data: Dict): Boolean
++ CancelEdit(): void
+
+   CartPage
+   --------------------------
++ CartItemsList: list
++ QuantitySelectors: inputs
++ RemoveButtons: buttons
++ TotalAmount: text
++ CheckoutButton: button
++ ContinueShoppingButton: button
+   --------------------------
++ UpdateQuantity(item_id: Integer, quantity: Integer): Boolean
++ RemoveItem(item_id: Integer): Boolean
++ CalculateTotal(): Decimal
++ ProceedToCheckout(): void
+
+   CheckoutPage
+   --------------------------
++ ShippingAddressForm: form
++ DeliveryOptions: radio
++ PaymentMethodForm: form
++ OrderSummary: section
++ PlaceOrderButton: button
+   --------------------------
++ ValidateShipping(address_data: Dict): Boolean
++ SelectDelivery(delivery_type: String): void
++ ProcessPayment(payment_data: Dict): Boolean
++ PlaceOrder(order_data: Dict): Order
+
+   OrderHistoryPage
+   --------------------------
++ OrderList: list
++ OrderFilters: dropdowns
++ OrderDetailsModal: modal
+   --------------------------
++ LoadOrders(user_id: Integer, filters: Dict): List[Order]
++ FilterOrders(filters: Dict): List[Order]
++ ShowOrderDetails(order_id: Integer): Order
+
+   OrderDetailPage
+   --------------------------
++ OrderInfo: section
++ OrderItems: list
++ OrderStatus: text
++ BackButton: button
+   --------------------------
++ LoadOrderDetails(order_id: Integer): Order
++ PrintOrder(order_id: Integer): Boolean
++ ContactSupport(order_id: Integer): void
+
+   WishlistPage
+   --------------------------
++ WishlistItems: grid
++ AddToCartButtons: buttons
++ RemoveButtons: buttons
++ ShareWishlistButton: button
+   --------------------------
++ LoadWishlist(user_id: Integer): List[WishlistItem]
++ AddToCart(product_id: Integer, quantity: Integer): Boolean
++ RemoveItem(item_id: Integer): Boolean
++ ShareWishlist(user_id: Integer): String
+
+   ChildWishlistPage
+   --------------------------
++ ChildNameHeader: heading
++ WishlistItems: grid
++ AddToCartButtons: buttons
++ BackToParentButton: button
+   --------------------------
++ LoadChildWishlist(child_id: Integer): List[WishlistItem]
++ AddToParentCart(product_id: Integer, quantity: Integer): Boolean
++ ReturnToParentView(): void
+
+   ChildrenManagementPage
+   --------------------------
++ ChildrenList: list
++ AddChildButton: button
++ EditChildButtons: buttons
++ RemoveChildButtons: buttons
+   --------------------------
++ LoadChildren(parent_id: Integer): List[User]
++ AddChild(child_data: Dict): Boolean
++ EditChild(child_id: Integer, child_data: Dict): Boolean
++ RemoveChild(child_id: Integer): Boolean
+
+   AddChildPage
+   --------------------------
++ ChildInfoForm: form
++ SaveButton: button
++ CancelButton: button
+   --------------------------
++ ValidateChildInfo(first_name: String, last_name: String, email: String, birth_date: Date): Boolean
++ SaveChild(child_data: Dict): Boolean
++ CancelAdd(): void
+
+   ReviewsPage
+   --------------------------
++ ProductInfo: section
++ ReviewList: list
++ ReviewForm: form
++ RatingSelector: component
+   --------------------------
++ LoadReviews(product_id: Integer): List[Review]
++ SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean
++ EditReview(review_id: Integer, rating: Integer, review_text: String): Boolean
+
+   WriteReviewPage
+   --------------------------
++ ProductInfo: section
++ ReviewForm: form
++ RatingInput: component
++ SubmitButton: button
++ CancelButton: button
+   --------------------------
++ LoadProductInfo(product_id: Integer): Product
++ SubmitReview(product_id: Integer, rating: Integer, review_text: String): Boolean
++ CancelReview(): void
+
+   SearchResultsPage
+   --------------------------
++ SearchQueryDisplay: text
++ ResultsCount: text
++ ResultsGrid: grid
++ RefinementFilters: filters
++ Pagination: navigation
+   --------------------------
++ DisplayResults(query: String, page: Integer): List[Product]
++ ApplyRefinements(filters: Dict): List[Product]
++ ChangePage(page_number: Integer): void
+
+   CategoryPage
+   --------------------------
++ CategoryInfo: section
++ ProductGrid: grid
++ FilterPanel: panel
++ SortDropdown: dropdown
+   --------------------------
++ LoadCategoryProducts(category_id: Integer, page: Integer): List[Product]
++ ApplyFilters(filters: Dict): List[Product]
++ SortProducts(sort_option: String): List[Product]
+
+   BrandPage
+   --------------------------
++ BrandInfo: section
++ ProductGrid: grid
++ FilterPanel: panel
++ SortDropdown: dropdown
+   --------------------------
++ LoadBrandProducts(brand_id: Integer, page: Integer): List[Product]
++ ApplyFilters(filters: Dict): List[Product]
++ SortProducts(sort_option: String): List[Product]
+
+   FAQPage
+   --------------------------
++ FAQList: accordion
++ SearchBox: input
++ ContactButton: button
+   --------------------------
+   + LoadFAQs(): List[FAQ]
+   + SearchFAQs(query: String): List[FAQ]
+   + ContactSupport(): void
+
+   TermsPage
+   --------------------------
++ TermsContent: section
++ LastUpdated: text
++ PrintButton: button
+   --------------------------
+   + LoadTerms(): String
+   + PrintTerms(): Boolean
+
+   AdminDashboardPage
+   --------------------------
++ SummaryCards: components
++ RecentActivity: list
++ QuickActions: buttons
++ AnalyticsCharts: charts
+   --------------------------
++ LoadDashboardData(): Dict
++ NavigateToSection(section: String): void
++ RefreshData(): void
+
+   AdminUsersPage
+   --------------------------
++ UserTable: table
++ RoleFilter: dropdown
++ SearchBox: input
++ AddUserButton: button
++ EditUserButtons: buttons
+   --------------------------
++ LoadUsers(filters: Dict): List[User]
++ FilterUsers(filters: Dict): List[User]
++ AddUser(user_data: Dict): Boolean
++ EditUser(user_id: Integer, user_data: Dict): Boolean
+
+   AdminUserDetailPage
+   --------------------------
++ UserInfo: section
++ UserOrders: list
++ UserActivity: list
++ EditButton: button
++ BackButton: button
+   --------------------------
++ LoadUserDetails(user_id: Integer): User
++ EditUser(user_id: Integer): void
++ ViewOrderDetails(order_id: Integer): Order
+
+   AdminProductsPage
+   --------------------------
++ ProductTable: table
++ CategoryFilter: dropdown
++ AddProductButton: button
++ EditProductButtons: buttons
++ DeleteProductButtons: buttons
+   --------------------------
++ LoadProducts(filters: Dict): List[Product]
++ FilterProducts(filters: Dict): List[Product]
++ AddProduct(product_data: Dict): Boolean
++ EditProduct(product_id: Integer, product_data: Dict): Boolean
++ DeleteProduct(product_id: Integer): Boolean
+
+   AdminProductFormPage
+   --------------------------
++ ProductForm: form
++ NameInput: text
++ DescriptionInput: textarea
++ PriceInput: number
++ SaveButton: button
++ CancelButton: button
+   --------------------------
++ LoadProductData(product_id: Integer): Product
++ ValidateProduct(product_data: Dict): Boolean
++ SaveProduct(product_data: Dict): Boolean
++ CancelEdit(): void
+
+   AdminCategoriesPage
+   --------------------------
++ CategoryList: list
++ AddCategoryForm: form
++ EditButtons: buttons
++ DeleteButtons: buttons
+   --------------------------
++ LoadCategories(): List[Category]
++ AddCategory(category_data: Dict): Boolean
++ EditCategory(category_id: Integer, category_data: Dict): Boolean
++ DeleteCategory(category_id: Integer): Boolean
+
+   AdminBrandsPage
+   --------------------------
++ BrandList: list
++ AddBrandForm: form
++ EditButtons: buttons
++ DeleteButtons: buttons
+   --------------------------
++ LoadBrands(): List[Brand]
++ AddBrand(brand_data: Dict): Boolean
++ EditBrand(brand_id: Integer, brand_data: Dict): Boolean
++ DeleteBrand(brand_id: Integer): Boolean
+
+   AdminOrdersPage
+   --------------------------
++ OrderTable: table
++ StatusFilter: dropdown
++ OrderDetailsModal: modal
++ UpdateStatusButtons: buttons
+   --------------------------
++ LoadOrders(filters: Dict): List[Order]
++ FilterOrders(filters: Dict): List[Order]
++ UpdateOrderStatus(order_id: Integer, status: String): Boolean
++ ViewOrderDetails(order_id: Integer): Order
+
+   AdminOrderDetailPage
+   --------------------------
++ OrderInfo: section
++ OrderItems: list
++ StatusHistory: list
++ UpdateStatusForm: form
++ BackButton: button
+   --------------------------
++ LoadOrderDetails(order_id: Integer): Order
++ UpdateOrderStatus(order_id: Integer, status: String): Boolean
++ PrintOrder(order_id: Integer): Boolean
+
+   AdminReviewsPage
+   --------------------------
++ ReviewTable: table
++ ProductFilter: dropdown
++ StatusFilter: dropdown
++ ModerateButtons: buttons
++ ReviewDetailsModal: modal
+   --------------------------
++ LoadReviews(filters: Dict): List[Review]
++ FilterReviews(filters: Dict): List[Review]
++ ModerateReview(review_id: Integer, action: String): Boolean
++ ViewReviewDetails(review_id: Integer): Review
+
+   AdminAuditPage
+   --------------------------
++ AuditLogTable: table
++ DateFilter: inputs
++ UserFilter: dropdown
++ ActionFilter: dropdown
++ ExportButton: button
+   --------------------------
++ LoadAuditLogs(filters: Dict): List[AuditLog]
++ FilterLogs(filters: Dict): List[AuditLog]
++ ExportLogs(format: String): File
+
+   AdminReportsPage
+   --------------------------
++ ReportSelector: dropdown
++ DateRangePicker: inputs
++ GenerateButton: button
++ ReportDisplay: section
++ ExportButton: button
+   --------------------------
++ LoadReportOptions(): List[String]
++ GenerateReport(report_type: String, date_range: Dict): Report
++ ExportReport(report_data: Report, format: String): File
+
+   AdminSettingsPage
+   --------------------------
++ GeneralSettings: form
++ SecuritySettings: form
++ SaveButton: button
++ ResetButton: button
+   --------------------------
+   + LoadSettings(): Dict
+   + SaveSettings(settings_data: Dict): Boolean
+   + ResetSettings(): void
+
+   ManagerDashboardPage
+   --------------------------
++ SalesSummary: cards
++ OrderQueue: list
++ ProductPerformance: chart
++ QuickActions: buttons
+   --------------------------
++ LoadDashboardData(): Dict
++ NavigateToSection(section: String): void
++ RefreshData(): void
+
+   ManagerProductsPage
+   --------------------------
++ ProductTable: table
++ StockFilter: dropdown
++ LowStockAlert: component
++ EditProductButtons: buttons
+   --------------------------
++ LoadProducts(filters: Dict): List[Product]
++ FilterProducts(filters: Dict): List[Product]
++ EditProduct(product_id: Integer): void
+
+   ManagerOrdersPage
+   --------------------------
++ OrderQueue: list
++ StatusUpdateForm: form
++ OrderDetailsModal: modal
++ ProcessOrderButtons: buttons
+   --------------------------
++ LoadOrders(filters: Dict): List[Order]
++ UpdateOrderStatus(order_id: Integer, status: String): Boolean
++ ProcessOrder(order_id: Integer): Boolean
++ ViewOrderDetails(order_id: Integer): Order
+
+   ManagerReviewsPage
+   --------------------------
+   + ReviewQueue: list
+   + ApprovalButtons: buttons
+   + ReviewDetailsModal: modal
+   + FilterOptions: dropdowns
+   --------------------------
+   + LoadReviews(filters: Dict): List[Review]
+   + ApproveReview(review_id: Integer): Boolean
+   + RejectReview(review_id: Integer): Boolean
+   + ViewReviewDetails(review_id: Integer): Review
+
+   ManagerAnalyticsPage
+   --------------------------
+   + SalesCharts: charts
+   + FilterControls: inputs
+   + ReportGenerator: component
+   + ExportButtons: buttons
+   --------------------------
+   + LoadAnalyticsData(filters: Dict): Dict
+   + ApplyFilters(filters: Dict): Dict
+   + GenerateReport(report_params: Dict): Report
+   + ExportData(data: Dict, format: String): File
+
+   Error404Page
+   --------------------------
++ ErrorMessage: text
++ ErrorCode: heading
++ HomeButton: button
++ BackButton: button
+   --------------------------
++ GoHome(): void
++ GoBack(): void
+
+   Error403Page
+   --------------------------
++ ErrorMessage: text
++ ErrorCode: heading
++ HomeButton: button
++ LoginButton: button
+   --------------------------
++ GoHome(): void
++ GoToLogin(): void
+
+   Error500Page
+   --------------------------
++ ErrorMessage: text
++ ErrorCode: heading
++ HomeButton: button
++ ContactSupportButton: button
+   --------------------------
++ GoHome(): void
++ ContactSupport(): void
+
+3. UI Component Classes (to be implemented) - 12
+   NavigationBar
+   --------------------------
+   + menu_items: List[MenuItem]
+   + logo: image
+   + nav_links: links
+   + user_menu: dropdown
+   --------------------------
+   + render(): HTML
+   + highlight_active_page(current_page: String): Void
+   + toggle_mobile_menu(): Void
+
+   ProductCard
+   --------------------------
++ product: Product
++ image: image
++ title: text
++ price: text
++ rating: component
+   --------------------------
++ render(): HTML
++ get_display_price(): String
++ get_rating_stars(): String
++ get_image_url(): String
+
+   ShoppingCartWidget
+   --------------------------
++ user: User
++ item_count: Integer
++ total_amount: text
++ dropdown: component
+   --------------------------
++ get_item_count(): Integer
++ render(): HTML
++ update_display(): Void
++ toggle_visibility(): Void
+
+   SearchBar
+   --------------------------
++ placeholder_text: String
++ search_input: input
++ search_button: button
++ clear_button: button
+   --------------------------
++ render(): HTML
++ handle_search(query: String): Void
++ clear_search(): Void
++ focus(): Void
+
+   FilterPanel
+   --------------------------
++ filters: Dict[String, List[String]]
++ category_filter: dropdown
++ price_filter: inputs
++ brand_filter: dropdown
++ age_filter: dropdown
+   --------------------------
++ render(): HTML
++ apply_filters(): Void
++ reset_filters(): Void
++ toggle_filter_section(): Void
+
+   RatingComponent
+   --------------------------
++ rating: Integer
++ max_rating: Integer
++ stars: components
++ rating_text: text
+   --------------------------
++ render(): HTML
++ get_star_html(): String
++ set_rating(new_rating: Integer): Void
+
+   ReviewComponent
+   --------------------------
++ review: Review
++ user_avatar: image
++ user_name: text
++ rating: component
++ review_text: text
+   --------------------------
++ render(): HTML
++ get_user_avatar(): String
++ format_date(date: DateTime): String
+
+   WishlistButton
+   --------------------------
++ product: Product
++ user: User
++ is_in_wishlist: Boolean
++ button: button
+   --------------------------
++ render(): HTML
++ toggle_wishlist(): Void
+
+   QuantitySelector
+   --------------------------
++ min_value: Integer
++ max_value: Integer
++ current_value: Integer
++ decrement_button: button
++ increment_button: button
++ input_field: input
+   --------------------------
++ render(): HTML
++ increase(): Void
++ decrease(): Void
++ set_value(value: Integer): Void
+
+   Pagination
+   --------------------------
++ current_page: Integer
++ total_pages: Integer
++ prev_button: button
++ next_button: button
++ page_numbers: buttons
+   --------------------------
++ render(): HTML
++ go_to_page(page: Integer): Void
++ next_page(): Void
++ previous_page(): Void
+
+   AlertMessage
+   --------------------------
++ message: String
++ type: String
++ is_visible: Boolean
++ close_button: button
+   --------------------------
++ render(): HTML
++ show(message: String, type: String): Void
++ hide(): Void
+
+4. Frontend JavaScript Classes (to be implemented) - 7
+   ThemeSwitcher
+   --------------------------
++ current_theme: String
++ theme_toggle: button
+   --------------------------
++ toggle_theme(): Void
++ set_theme(theme_name: String): Void
++ get_current_theme(): String
++ apply_theme_styles(): Void
+
+   ProductGallery
+   --------------------------
++ images: List[ProductImage]
++ current_image_index: Integer
++ main_image: image
++ thumbnails: images
+   --------------------------
++ next_image(): Void
++ previous_image(): Void
++ set_image(index: Integer): Void
++ render_thumbnails(): Void
+
+   CartManager
+   --------------------------
++ cart_items: List[CartItem]
++ total_amount: Decimal
++ item_count: Integer
+   --------------------------
++ add_to_cart(product_id: Integer, quantity: Integer): Void
++ remove_from_cart(item_id: Integer): Void
++ update_quantity(item_id: Integer, quantity: Integer): Void
++ get_cart_total(): Decimal
++ refresh_cart_display(): Void
+
+   WishlistManager
+   --------------------------
++ wishlist_items: List[WishlistItem]
++ item_count: Integer
+   --------------------------
++ add_to_wishlist(product_id: Integer): Void
++ remove_from_wishlist(item_id: Integer): Void
++ is_in_wishlist(product_id: Integer): Boolean
++ refresh_wishlist_display(): Void
+
+   SearchAutocomplete
+   --------------------------
++ suggestions: List[String]
++ input_field: input
++ suggestion_list: list
+   --------------------------
++ render_suggestions(): Void
++ fetch_suggestions(query: String): Void
++ select_suggestion(suggestion: String): Void
+
+   ResponsiveMenu
+   --------------------------
++ is_mobile_menu_open: Boolean
++ menu_button: button
++ menu_container: element
+   --------------------------
++ toggle_mobile_menu(): Void
++ close_mobile_menu(): Void
++ open_mobile_menu(): Void
+
+These classes are responsible for the graphical user interface and user experience of the JoyBox Toy Store System. They cover all aspects of the frontend implementation including templates, styling, interactive components, and user experience enhancements.

@@ -1,0 +1,277 @@
+Class Relationships for JoyBox Toy Store System
+
+CLASS NAMES:
+1. Role - класс, представляющий роли пользователей в системе
+2. User - класс, представляющий пользователей системы (родитель, ребенок, менеджер, администратор)
+3. Category - класс, представляющий категории товаров
+4. Brand - класс, представляющий бренды товаров
+5. Product - класс, представляющий товары в магазине
+6. ProductImage - класс, представляющий изображения товаров
+7. ProductAttribute - класс, представляющий атрибуты товаров
+8. Address - класс, представляющий адреса пользователей
+9. OrderStatus - класс, представляющий статусы заказов
+10. Order - класс, представляющий заказы пользователей
+11. OrderItem - класс, представляющий элементы заказов
+12. Review - класс, представляющий отзывы о товарах
+13. Wishlist - класс, представляющий список желаемого пользователя
+14. Cart - класс, представляющий корзину покупок пользователя
+15. ParentChild - класс, представляющий связи между родителями и детьми
+16. AuditLog - класс, представляющий журнал аудита действий пользователей
+20. RoleAdmin - административный класс для управления ролями
+21. UserAdmin - административный класс для управления пользователями
+22. CategoryAdmin - административный класс для управления категориями
+23. BrandAdmin - административный класс для управления брендами
+24. ProductAdmin - административный класс для управления товарами
+25. ProductImageAdmin - административный класс для управления изображениями товаров
+26. ProductAttributeAdmin - административный класс для управления атрибутами товаров
+27. AddressAdmin - административный класс для управления адресами
+28. OrderStatusAdmin - административный класс для управления статусами заказов
+29. OrderAdmin - административный класс для управления заказами
+30. OrderItemAdmin - административный класс для управления элементами заказов
+31. ReviewAdmin - административный класс для управления отзывами
+32. WishlistAdmin - административный класс для управления списками желаемого
+33. CartAdmin - административный класс для управления корзинами
+34. ParentChildAdmin - административный класс для управления связями родитель-ребенок
+35. AuditLogAdmin - административный класс для управления журналом аудита
+36. RoleSerializer - сериализатор для модели Role
+37. UserSerializer - сериализатор для модели User
+38. CategorySerializer - сериализатор для модели Category
+39. BrandSerializer - сериализатор для модели Brand
+40. ProductSerializer - сериализатор для модели Product
+41. ProductImageSerializer - сериализатор для модели ProductImage
+42. ProductAttributeSerializer - сериализатор для модели ProductAttribute
+43. AddressSerializer - сериализатор для модели Address
+44. OrderStatusSerializer - сериализатор для модели OrderStatus
+45. OrderSerializer - сериализатор для модели Order
+46. OrderItemSerializer - сериализатор для модели OrderItem
+47. ReviewSerializer - сериализатор для модели Review
+48. WishlistSerializer - сериализатор для модели Wishlist
+49. CartSerializer - сериализатор для модели Cart
+50. ParentChildSerializer - сериализатор для модели ParentChild
+51. AuditLogSerializer - сериализатор для модели AuditLog
+52. ProductImageSerializer - сериализатор для модели ProductImage
+53. ProductAttributeSerializer - сериализатор для модели ProductAttribute
+54. OrderItemSerializer - сериализатор для модели OrderItem
+55. ParentChildSerializer - сериализатор для модели ParentChild
+56. RoleViewSet - ViewSet для работы с ролями через API
+57. UserViewSet - ViewSet для работы с пользователями через API
+58. CategoryViewSet - ViewSet для работы с категориями через API
+59. BrandViewSet - ViewSet для работы с брендами через API
+60. ProductViewSet - ViewSet для работы с товарами через API
+61. AddressViewSet - ViewSet для работы с адресами через API
+62. OrderViewSet - ViewSet для работы с заказами через API
+63. ReviewViewSet - ViewSet для работы с отзывами через API
+64. WishlistViewSet - ViewSet для работы со списками желаемого через API
+65. CartViewSet - ViewSet для работы с корзинами через API
+64. ProductImageViewSet - ViewSet для работы с изображениями товаров через API
+65. ProductAttributeViewSet - ViewSet для работы с атрибутами товаров через API
+66. OrderItemViewSet - ViewSet для работы с элементами заказов через API
+67. ParentChildViewSet - ViewSet для работы со связями родитель-ребенок через API
+68. AuditLogViewSet - ViewSet для работы с журналом аудита через API
+64. UserRegistrationForm - форма регистрации пользователей
+65. UserLoginForm - форма входа пользователей
+66. ProductSearchForm - форма поиска товаров
+67. OrderForm - форма оформления заказа
+68. ReviewForm - форма создания отзыва
+69. AddressForm - форма добавления/редактирования адреса
+70. WishlistForm - форма добавления товара в список желаемого
+71. CategoryForm - форма создания/редактирования категории
+72. BrandForm - форма создания/редактирования бренда
+73. ProductForm - форма создания/редактирования товара
+74. ProductImageForm - форма добавления изображения товара
+75. ProductAttributeForm - форма добавления атрибута товара
+76. AddressManagementForm - форма управления адресами
+77. OrderStatusForm - форма создания/редактирования статуса заказа
+78. OrderItemForm - форма создания/редактирования элемента заказа
+79. ParentChildForm - форма создания связи родитель-ребенок
+80. AuditLogForm - форма создания записи аудита
+71. IsAdminOrReadOnly - класс разрешений для администраторов или только чтения
+72. IsOwnerOrAdmin - класс разрешений для владельца или администратора
+73. IsParentOrAdmin - класс разрешений для родителя или администратора
+74. IsAuthenticatedUser - класс разрешений для аутентифицированных пользователей
+75. SalesAnalytics - класс для аналитики продаж
+76. ProductAnalytics - класс для аналитики товаров
+77. UserAnalytics - класс для аналитики пользователей
+78. ReportGenerator - класс для генерации отчетов
+79. DataExport - класс для экспорта данных
+80. EmailService - сервис для отправки электронной почты
+81. NotificationService - сервис для отправки уведомлений
+82. PaymentService - сервис для обработки платежей
+83. SearchService - сервис для поиска товаров
+84. RecommendationEngine - движок рекомендаций товаров
+85. AuditService - сервис для ведения аудита
+86. BackupService - сервис для резервного копирования
+
+RELATIONSHIPS (Using UML Relationship Types):
+
+1. Role ↔ User (Association)
+   - One Role can have many Users
+   - Many Users belong to one Role
+
+2. User ↔ Address (Association)
+   - One User can have many Addresses
+   - Many Addresses belong to one User
+
+3. User ↔ Order (Association)
+   - One User can place many Orders
+   - Many Orders are placed by one User
+
+4. User ↔ Review (Association)
+   - One User can write many Reviews
+   - Many Reviews are written by one User
+
+5. User ↔ Wishlist (Association)
+   - One User can have many Wishlist items
+   - Many Wishlist items belong to one User
+
+6. User ↔ Cart (Association)
+   - One User can have many Cart items
+   - Many Cart items belong to one User
+
+7. User ↔ ParentChild (Association)
+   - One User (parent) can have many ParentChild relationships
+   - One User (child) can have many ParentChild relationships
+
+8. User ↔ AuditLog (Association)
+   - One User can have many AuditLog entries
+   - Many AuditLog entries are associated with one User
+
+9. Category ↔ Product (Association)
+   - One Category can have many Products
+   - Many Products belong to one Category
+
+10. Brand ↔ Product (Association)
+    - One Brand can have many Products
+    - Many Products belong to one Brand
+
+11. Product ↔ ProductImage (Association)
+    - One Product can have many ProductImages
+    - Many ProductImages belong to one Product
+
+12. Product ↔ ProductAttribute (Association)
+    - One Product can have many ProductAttributes
+    - Many ProductAttributes belong to one Product
+
+13. Product ↔ OrderItem (Association)
+    - One Product can be in many OrderItems
+    - Many OrderItems reference one Product
+
+14. Product ↔ Review (Association)
+    - One Product can have many Reviews
+    - Many Reviews are for one Product
+
+15. Product ↔ Wishlist (Association)
+    - One Product can be in many Wishlist items
+    - Many Wishlist items reference one Product
+
+16. Product ↔ Cart (Association)
+    - One Product can be in many Cart items
+    - Many Cart items reference one Product
+
+17. OrderStatus ↔ Order (Association)
+    - One OrderStatus can apply to many Orders
+    - Many Orders have one OrderStatus
+
+18. Address ↔ Order (Association)
+    - One Address can be used in many Orders
+    - Many Orders use one Address
+
+19. Order ↔ OrderItem (Association)
+    - One Order can have many OrderItems
+    - Many OrderItems belong to one Order
+
+20. Serializer-Model Pairs (Association):
+    - RoleSerializer ↔ Role
+    - UserSerializer ↔ User
+    - CategorySerializer ↔ Category
+    - BrandSerializer ↔ Brand
+    - ProductSerializer ↔ Product
+    - ProductImageSerializer ↔ ProductImage
+    - ProductAttributeSerializer ↔ ProductAttribute
+    - AddressSerializer ↔ Address
+    - OrderStatusSerializer ↔ OrderStatus
+    - OrderSerializer ↔ Order
+    - OrderItemSerializer ↔ OrderItem
+    - ReviewSerializer ↔ Review
+    - WishlistSerializer ↔ Wishlist
+    - CartSerializer ↔ Cart
+    - ParentChildSerializer ↔ ParentChild
+    - AuditLogSerializer ↔ AuditLog
+
+21. ViewSet-Serializer Pairs (Association):
+    - RoleViewSet ↔ RoleSerializer
+    - UserViewSet ↔ UserSerializer
+    - CategoryViewSet ↔ CategorySerializer
+    - BrandViewSet ↔ BrandSerializer
+    - ProductViewSet ↔ ProductSerializer
+    - AddressViewSet ↔ AddressSerializer
+    - OrderViewSet ↔ OrderSerializer
+    - ReviewViewSet ↔ ReviewSerializer
+    - WishlistViewSet ↔ WishlistSerializer
+    - CartViewSet ↔ CartSerializer
+    - ProductImageViewSet ↔ ProductImageSerializer
+    - ProductAttributeViewSet ↔ ProductAttributeSerializer
+    - OrderItemViewSet ↔ OrderItemSerializer
+    - ParentChildViewSet ↔ ParentChildSerializer
+    - AuditLogViewSet ↔ AuditLogSerializer
+
+22. Form-Model Pairs (Association):
+    - UserRegistrationForm ↔ User
+    - ProductSearchForm ↔ Product
+    - OrderForm ↔ Order
+    - ReviewForm ↔ Review
+    - AddressForm ↔ Address
+    - WishlistForm ↔ Wishlist
+    - CategoryForm ↔ Category
+    - BrandForm ↔ Brand
+    - ProductForm ↔ Product
+    - ProductImageForm ↔ ProductImage
+    - ProductAttributeForm ↔ ProductAttribute
+    - AddressManagementForm ↔ Address
+    - OrderStatusForm ↔ OrderStatus
+    - OrderItemForm ↔ OrderItem
+    - ParentChildForm ↔ ParentChild
+    - AuditLogForm ↔ AuditLog
+
+23. Admin-Model Pairs (Association):
+    - RoleAdmin ↔ Role
+    - UserAdmin ↔ User
+    - CategoryAdmin ↔ Category
+    - BrandAdmin ↔ Brand
+    - ProductAdmin ↔ Product
+    - ProductImageAdmin ↔ ProductImage
+    - ProductAttributeAdmin ↔ ProductAttribute
+    - AddressAdmin ↔ Address
+    - OrderStatusAdmin ↔ OrderStatus
+    - OrderAdmin ↔ Order
+    - OrderItemAdmin ↔ OrderItem
+    - ReviewAdmin ↔ Review
+    - WishlistAdmin ↔ Wishlist
+    - CartAdmin ↔ Cart
+    - ParentChildAdmin ↔ ParentChild
+    - AuditLogAdmin ↔ AuditLog
+
+24. Utility Class Dependencies (Dependency):
+    - SalesAnalytics → Product, Order (Dependency)
+    - ProductAnalytics → Product, Review (Dependency)
+    - UserAnalytics → User (Dependency)
+    - ReportGenerator → various model data (Dependency)
+    - DataExport → various model data (Dependency)
+    - EmailService → User (Dependency)
+    - NotificationService → User (Dependency)
+    - PaymentService → Order (Dependency)
+    - SearchService → Product (Dependency)
+    - RecommendationEngine → Product, User (Dependency)
+    - AuditService → AuditLog (Dependency)
+    - BackupService → database (Dependency)
+
+25. Permission Class Relationships (Dependency):
+    - IsAdminOrReadOnly → User|Role (Dependency)
+    - IsOwnerOrAdmin → User|Role (Dependency)
+    - IsParentOrAdmin → User (Dependency)
+    - IsAuthenticatedUser → User (Dependency)
+
+Legend:
+↔ Association relationship
+→ Dependency relationship
+--|> Inheritance/Generalization relationship

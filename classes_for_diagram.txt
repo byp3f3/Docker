@@ -1,0 +1,985 @@
+Classes for Class Diagram - JoyBox Toy Store System
+Detailed with Access Modifiers and Methods
+[UTILITY CLASSES MARKED WITH *]
+
+MODEL CLASSES:
+
+1. Role
+   + roleId: AutoField [PK]
+   + roleName: CharField [max_length=100]
+   - Relationships: User (1:M)
++ __str__(): String
++ get_users(): QuerySet[User]
+
+2. User (AbstractUser)
+   + userId: BigAutoField [PK]
+   + lastName: CharField [max_length=100]
+   + firstName: CharField [max_length=100]
+   + middleName: CharField [max_length=100, nullable, blank]
+   + email: EmailField [max_length=255, unique]
+   # password: CharField [max_length=100]
+   # roleId: ForeignKey to Role [on_delete=CASCADE]
+   + phone: CharField [max_length=11]
+   + birthDate: DateField
+   + createdAt: DateTimeField
+   + username: CharField [max_length=150]
+   - Relationships: 
+     * Role (M:1)
+     * Address (1:M)
+     * Order (1:M)
+     * Review (1:M)
+     * Wishlist (1:M)
+     * Cart (1:M)
+     * ParentChild (1:M as parent, 1:M as child)
+     * AuditLog (1:M)
++ __str__(): String
++ get_full_name(): String
++ get_short_name(): String
++ get_addresses(): QuerySet[Address]
++ get_orders(): QuerySet[Order]
++ get_reviews(): QuerySet[Review]
++ get_wishlist(): QuerySet[Wishlist]
++ get_cart_items(): QuerySet[Cart]
++ get_children(): QuerySet[User]
++ get_parent(): QuerySet[User]
++ get_audit_logs(): QuerySet[AuditLog]
++ has_role(role_name: String): Boolean
++ is_parent(): Boolean
++ is_child(): Boolean
++ is_admin(): Boolean
++ is_manager(): Boolean
+
+3. Category
+   + categoryId: AutoField [PK]
+   + categoryName: CharField [max_length=100]
+   + categoryDescription: TextField
+   - Relationships: Product (1:M)
++ __str__(): String
++ get_products(): QuerySet[Product]
++ get_product_count(): Integer
+
+4. Brand
+   + brandId: AutoField [PK]
+   + brandName: CharField [max_length=100]
+   + brandDescription: TextField
+   + brandCountry: CharField [max_length=100]
+   - Relationships: Product (1:M)
+   + __str__(): String
+   + get_products(): QuerySet[Product]
+   + get_product_count(): Integer
+
+5. Product
+   + productId: BigAutoField [PK]
+   + productName: CharField [max_length=100]
+   + productDescription: TextField
+   # categoryId: ForeignKey to Category [on_delete=CASCADE]
+   # brandId: ForeignKey to Brand [on_delete=CASCADE]
+   + price: DecimalField [max_digits=10, decimal_places=2]
+   + ageRating: IntegerField
+   + quantity: IntegerField
+   + weightKg: DecimalField [max_digits=10, decimal_places=2]
+   + dimensions: CharField [max_length=50]
+   - Relationships:
+     * Category (M:1)
+     * Brand (M:1)
+     * ProductImage (1:M)
+     * ProductAttribute (1:M)
+     * OrderItem (1:M)
+     * Review (1:M)
+     * Wishlist (1:M)
+     * Cart (1:M)
++ __str__(): String
++ get_images(): QuerySet[ProductImage]
++ get_main_image(): ProductImage
++ get_attributes(): QuerySet[ProductAttribute]
++ get_reviews(): QuerySet[Review]
++ get_average_rating(): Float
++ get_review_count(): Integer
++ get_related_products(): QuerySet[Product]
++ is_in_wishlist(user: User): Boolean
++ is_in_cart(user: User): Boolean
++ get_inventory_status(): String
++ reduce_quantity(quantity: Integer): Boolean
+
+6. ProductImage
+   + productImageId: BigAutoField [PK]
+   # productId: ForeignKey to Product [on_delete=CASCADE]
+   + url: CharField [max_length=500]
+   + altText: CharField [max_length=100]
+   + isMain: BooleanField [default=False]
+   - Relationships: Product (M:1)
++ __str__(): String
++ get_product(): Product
+
+7. ProductAttribute
+   + productAttributeId: BigAutoField [PK]
+   # productId: ForeignKey to Product [on_delete=CASCADE]
+   + productAttributeName: CharField [max_length=100]
+   + productAttributeValue: CharField [max_length=100]
+   + productAttributeUnit: CharField [max_length=50, nullable, blank]
+   - Relationships: Product (M:1)
+   + __str__(): String
+   + get_product(): Product
+
+8. Address
+   + addressId: BigAutoField [PK]
+   # userId: ForeignKey to User [on_delete=CASCADE]
+   + city: CharField [max_length=100]
+   + street: CharField [max_length=100]
+   + house: CharField [max_length=50]
+   + flat: CharField [max_length=10, nullable, blank]
+   + index: CharField [max_length=6]
+   - Relationships: User (M:1), Order (1:M)
+   + __str__(): String
+   + get_user(): User
+   + get_orders(): QuerySet[Order]
+   + get_full_address(): String
+
+9. OrderStatus
+   + orderStatusId: AutoField [PK]
+   + orderStatusName: CharField [max_length=100]
+   - Relationships: Order (1:M)
+   + __str__(): String
+   + get_orders(): QuerySet[Order]
+
+10. Order
+    + orderId: BigAutoField [PK]
+    # userId: ForeignKey to User [on_delete=CASCADE]
+    # orderStatusId: ForeignKey to OrderStatus [on_delete=CASCADE]
+    + total: DecimalField [max_digits=10, decimal_places=2]
+    # addressId: ForeignKey to Address [on_delete=CASCADE]
+    + deliveryType: CharField [max_length=20]
+    + paymentType: CharField [max_length=20]
+    + paymentStatus: CharField [max_length=20]
+    + note: CharField [max_length=100, nullable, blank]
+    + createdAt: DateTimeField
+    - Relationships:
+      * User (M:1)
+      * OrderStatus (M:1)
+      * Address (M:1)
+      * OrderItem (1:M)
++ __str__(): String
++ get_user(): User
++ get_status(): OrderStatus
++ get_address(): Address
++ get_items(): QuerySet[OrderItem]
++ get_item_count(): Integer
++ update_total(): DecimalField
++ change_status(new_status: OrderStatus): Boolean
++ is_paid(): Boolean
++ is_delivered(): Boolean
+
+11. OrderItem
+    + orderItemId: BigAutoField [PK]
+    # orderId: ForeignKey to Order [on_delete=CASCADE]
+    # productId: ForeignKey to Product [on_delete=CASCADE]
+    + quantity: IntegerField
+    + unitPrice: DecimalField [max_digits=10, decimal_places=2]
+    - Relationships: Order (M:1), Product (M:1)
++ __str__(): String
++ get_order(): Order
++ get_product(): Product
++ get_total_price(): DecimalField
+
+12. Review
+    + reviewId: BigAutoField [PK]
+    # productId: ForeignKey to Product [on_delete=CASCADE]
+    # userId: ForeignKey to User [on_delete=CASCADE]
+    + rating: IntegerField
+    + reviewText: TextField [nullable, blank]
+    + createdAt: DateTimeField
+    + updatedAt: DateTimeField
+    - Relationships: Product (M:1), User (M:1)
++ __str__(): String
++ get_product(): Product
++ get_user(): User
++ update_review(text: String, rating: Integer): Boolean
+
+13. Wishlist
+    + wishlistId: BigAutoField [PK]
+    # userId: ForeignKey to User [on_delete=CASCADE]
+    # productId: ForeignKey to Product [on_delete=CASCADE]
+    - Relationships: User (M:1), Product (M:1)
++ __str__(): String
++ get_user(): User
++ get_product(): Product
++ is_owner(user: User): Boolean
+
+14. Cart
+    + cartId: BigAutoField [PK]
+    # userId: ForeignKey to User [on_delete=CASCADE]
+    # productId: ForeignKey to Product [on_delete=CASCADE]
+    + quantity: IntegerField
+    - Relationships: User (M:1), Product (M:1)
++ __str__(): String
++ get_user(): User
++ get_product(): Product
++ get_total_price(): DecimalField
++ update_quantity(new_quantity: Integer): Boolean
++ is_owner(user: User): Boolean
+
+15. ParentChild
+    + parentChildId: BigAutoField [PK]
+    # userId: ForeignKey to User (parent) [on_delete=CASCADE, related_name=parent_relations]
+    # childId: ForeignKey to User (child) [on_delete=CASCADE, related_name=child_relations]
+    - Relationships: User (M:1 as parent, M:1 as child)
++ __str__(): String
++ get_parent(): User
++ get_child(): User
++ is_valid_relation(): Boolean
+
+16. AuditLog
+    + auditLogId: BigAutoField [PK]
+    # userId: ForeignKey to User [on_delete=CASCADE]
+    + action: CharField [max_length=100]
+    + tableName: CharField [max_length=100]
+    + recordId: BigIntegerField
+    + oldValues: JSONField [nullable, blank]
+    + newValues: JSONField [nullable, blank]
+    + createdAt: DateTimeField
+    - Relationships: User (M:1)
++ __str__(): String
++ get_user(): User
++ get_record(): Object
++ format_changes(): String
+
+
+ADMIN CLASSES:
+
+20. RoleAdmin
+    + model: Role
+    + list_display: [roleId, roleName]
+    + search_fields: [roleName]
+    + get_queryset(request): QuerySet[Role]
+
+21. UserAdmin
+    + model: User
+    + list_display: [userId, firstName, lastName, email, roleId]
+    + search_fields: [firstName, lastName, email]
+    + list_filter: [roleId]
+    + get_queryset(request): QuerySet[User]
+
+22. CategoryAdmin
+    + model: Category
+    + list_display: [categoryId, categoryName]
+    + search_fields: [categoryName]
+    + get_queryset(request): QuerySet[Category]
+
+23. BrandAdmin
+    + model: Brand
+    + list_display: [brandId, brandName, brandCountry]
+    + search_fields: [brandName]
+    + get_queryset(request): QuerySet[Brand]
+
+24. ProductAdmin
+    + model: Product
+    + list_display: [productId, productName, categoryId, brandId, price]
+    + search_fields: [productName]
+    + list_filter: [categoryId, brandId]
+    + get_queryset(request): QuerySet[Product]
+
+25. ProductImageAdmin
+    + model: ProductImage
+    + list_display: [productImageId, productId, isMain]
+    + list_filter: [isMain]
+    + get_queryset(request): QuerySet[ProductImage]
+
+26. ProductAttributeAdmin
++ model: ProductAttribute
++ list_display: [productAttributeId, productId, productAttributeName]
+    + get_queryset(request): QuerySet[ProductAttribute]
+
+27. AddressAdmin
++ model: Address
++ list_display: [addressId, userId, city, street]
+    + get_queryset(request): QuerySet[Address]
+
+28. OrderStatusAdmin
++ model: OrderStatus
++ list_display: [orderStatusId, orderStatusName]
+    + get_queryset(request): QuerySet[OrderStatus]
+
+29. OrderAdmin
++ model: Order
++ list_display: [orderId, userId, orderStatusId, total]
++ list_filter: [orderStatusId]
+    + get_queryset(request): QuerySet[Order]
+
+30. OrderItemAdmin
++ model: OrderItem
++ list_display: [orderItemId, orderId, productId, quantity]
+    + get_queryset(request): QuerySet[OrderItem]
+
+31. ReviewAdmin
++ model: Review
++ list_display: [reviewId, productId, userId, rating]
++ list_filter: [rating]
+    + get_queryset(request): QuerySet[Review]
+
+32. WishlistAdmin
++ model: Wishlist
++ list_display: [wishlistId, userId, productId]
+    + get_queryset(request): QuerySet[Wishlist]
+
+33. CartAdmin
++ model: Cart
++ list_display: [cartId, userId, productId, quantity]
+    + get_queryset(request): QuerySet[Cart]
+
+34. ParentChildAdmin
++ model: ParentChild
++ list_display: [parentChildId, userId, childId]
+    + get_queryset(request): QuerySet[ParentChild]
+
+35. AuditLogAdmin
++ model: AuditLog
++ list_display: [auditLogId, userId, action, tableName]
++ list_filter: [action, tableName]
+    + get_queryset(request): QuerySet[AuditLog]
+
+API CLASSES (Django REST Framework):
+
+36. RoleSerializer
+    + roleId: IntegerField
+    + roleName: CharField [max_length=100]
+    + Meta:
+      * model: Role
+      * fields: [roleId, roleName]
++ create(validated_data: Dict): Role
++ update(instance: Role, validated_data: Dict): Role
+
+37. UserSerializer
+    + userId: IntegerField
+    + lastName: CharField [max_length=100]
+    + firstName: CharField [max_length=100]
+    + middleName: CharField [max_length=100, nullable, blank]
+    + email: EmailField [max_length=255, unique]
+    # password: CharField [max_length=100]
+    + roleId: IntegerField
+    + phone: CharField [max_length=11]
+    + birthDate: DateField
+    + createdAt: DateTimeField
+    + username: CharField [max_length=150]
+    + Meta:
+      * model: User
+      * fields: [userId, lastName, firstName, middleName, email, password, roleId, phone, birthDate, createdAt, username]
++ create(validated_data: Dict): User
++ update(instance: User, validated_data: Dict): User
+
+38. CategorySerializer
+    + categoryId: IntegerField
+    + categoryName: CharField [max_length=100]
+    + categoryDescription: TextField
+    + Meta:
+      * model: Category
+      * fields: [categoryId, categoryName, categoryDescription]
++ create(validated_data: Dict): Category
++ update(instance: Category, validated_data: Dict): Category
+
+39. BrandSerializer
+    + brandId: IntegerField
+    + brandName: CharField [max_length=100]
+    + brandDescription: TextField
+    + brandCountry: CharField [max_length=100]
+    + Meta:
+      * model: Brand
+      * fields: [brandId, brandName, brandDescription, brandCountry]
++ create(validated_data: Dict): Brand
++ update(instance: Brand, validated_data: Dict): Brand
+
+40. ProductSerializer
+    + productId: IntegerField
+    + productName: CharField [max_length=100]
+    + productDescription: TextField
+    + categoryId: IntegerField
+    + brandId: IntegerField
+    + price: DecimalField [max_digits=10, decimal_places=2]
+    + ageRating: IntegerField
+    + quantity: IntegerField
+    + weightKg: DecimalField [max_digits=10, decimal_places=2]
+    + dimensions: CharField [max_length=50]
+    + Meta:
+      * model: Product
+      * fields: [productId, productName, productDescription, categoryId, brandId, price, ageRating, quantity, weightKg, dimensions]
++ create(validated_data: Dict): Product
++ update(instance: Product, validated_data: Dict): Product
+
+41. ProductImageSerializer
+    + productImageId: IntegerField
+    + productId: IntegerField
+    + url: CharField [max_length=500]
+    + altText: CharField [max_length=100]
+    + isMain: BooleanField [default=False]
+    + Meta:
+      * model: ProductImage
+      * fields: [productImageId, productId, url, altText, isMain]
++ create(validated_data: Dict): ProductImage
++ update(instance: ProductImage, validated_data: Dict): ProductImage
+
+42. ProductAttributeSerializer
+    + productAttributeId: IntegerField
+    + productId: IntegerField
+    + productAttributeName: CharField [max_length=100]
+    + productAttributeValue: CharField [max_length=100]
+    + productAttributeUnit: CharField [max_length=50, nullable, blank]
+    + Meta:
+      * model: ProductAttribute
+      * fields: [productAttributeId, productId, productAttributeName, productAttributeValue, productAttributeUnit]
++ create(validated_data: Dict): ProductAttribute
++ update(instance: ProductAttribute, validated_data: Dict): ProductAttribute
+
+43. AddressSerializer
+    + addressId: IntegerField
+    + userId: IntegerField
+    + city: CharField [max_length=100]
+    + street: CharField [max_length=100]
+    + house: CharField [max_length=50]
+    + flat: CharField [max_length=10, nullable, blank]
+    + index: CharField [max_length=6]
+    + Meta:
+      * model: Address
+      * fields: [addressId, userId, city, street, house, flat, index]
++ create(validated_data: Dict): Address
++ update(instance: Address, validated_data: Dict): Address
+
+44. OrderStatusSerializer
+    + orderStatusId: IntegerField
+    + orderStatusName: CharField [max_length=100]
+    + Meta:
+      * model: OrderStatus
+      * fields: [orderStatusId, orderStatusName]
++ create(validated_data: Dict): OrderStatus
++ update(instance: OrderStatus, validated_data: Dict): OrderStatus
+
+45. OrderSerializer
+    + orderId: IntegerField
+    + userId: IntegerField
+    + orderStatusId: IntegerField
+    + total: DecimalField [max_digits=10, decimal_places=2]
+    + addressId: IntegerField
+    + deliveryType: CharField [max_length=20]
+    + paymentType: CharField [max_length=20]
+    + paymentStatus: CharField [max_length=20]
+    + note: CharField [max_length=100, nullable, blank]
+    + createdAt: DateTimeField
+    + Meta:
+      * model: Order
+      * fields: [orderId, userId, orderStatusId, total, addressId, deliveryType, paymentType, paymentStatus, note, createdAt]
++ create(validated_data: Dict): Order
++ update(instance: Order, validated_data: Dict): Order
+
+46. OrderItemSerializer
+    + orderItemId: IntegerField
+    + orderId: IntegerField
+    + productId: IntegerField
+    + quantity: IntegerField
+    + unitPrice: DecimalField [max_digits=10, decimal_places=2]
+    + Meta:
+      * model: OrderItem
+      * fields: [orderItemId, orderId, productId, quantity, unitPrice]
++ create(validated_data: Dict): OrderItem
++ update(instance: OrderItem, validated_data: Dict): OrderItem
+
+47. ReviewSerializer
+    + reviewId: IntegerField
+    + productId: IntegerField
+    + userId: IntegerField
+    + rating: IntegerField
+    + reviewText: CharField [nullable, blank]
+    + createdAt: DateTimeField
+    + updatedAt: DateTimeField
+    + Meta:
+      * model: Review
+      * fields: [reviewId, productId, userId, rating, reviewText, createdAt, updatedAt]
++ create(validated_data: Dict): Review
++ update(instance: Review, validated_data: Dict): Review
+
+48. WishlistSerializer
+    + wishlistId: IntegerField
+    + userId: IntegerField
+    + productId: IntegerField
+    + Meta:
+      * model: Wishlist
+      * fields: [wishlistId, userId, productId]
+    + create(validated_data: Dict): Wishlist
+    + update(instance: Wishlist, validated_data: Dict): Wishlist
+
+49. CartSerializer
+    + cartId: IntegerField
+    + userId: IntegerField
+    + productId: IntegerField
+    + quantity: IntegerField
+    + Meta:
+      * model: Cart
+      * fields: [cartId, userId, productId, quantity]
++ create(validated_data: Dict): Cart
++ update(instance: Cart, validated_data: Dict): Cart
+
+50. ParentChildSerializer
+    + parentChildId: IntegerField
+    + userId: IntegerField
+    + childId: IntegerField
+    + Meta:
+      * model: ParentChild
+      * fields: [parentChildId, userId, childId]
++ create(validated_data: Dict): ParentChild
++ update(instance: ParentChild, validated_data: Dict): ParentChild
+
+51. AuditLogSerializer
+    + auditLogId: IntegerField
+    + userId: IntegerField
+    + action: CharField [max_length=100]
+    + tableName: CharField [max_length=100]
+    + recordId: IntegerField
+    + oldValues: JSONField [nullable, blank]
+    + newValues: JSONField [nullable, blank]
+    + createdAt: DateTimeField
+    + Meta:
+      * model: AuditLog
+      * fields: [auditLogId, userId, action, tableName, recordId, oldValues, newValues, createdAt]
++ create(validated_data: Dict): AuditLog
++ update(instance: AuditLog, validated_data: Dict): AuditLog
+
+52. ProductImageSerializer
+    + productImageId: IntegerField
+    + productId: IntegerField
+    + url: CharField [max_length=500]
+    + altText: CharField [max_length=100]
+    + isMain: BooleanField [default=False]
+    + Meta:
+      * model: ProductImage
+      * fields: [productImageId, productId, url, altText, isMain]
++ create(validated_data: Dict): ProductImage
++ update(instance: ProductImage, validated_data: Dict): ProductImage
+
+53. ProductAttributeSerializer
+    + productAttributeId: IntegerField
+    + productId: IntegerField
+    + productAttributeName: CharField [max_length=100]
+    + productAttributeValue: CharField [max_length=100]
+    + productAttributeUnit: CharField [max_length=50, nullable, blank]
+    + Meta:
+      * model: ProductAttribute
+      * fields: [productAttributeId, productId, productAttributeName, productAttributeValue, productAttributeUnit]
+    + create(validated_data: Dict): ProductAttribute
+    + update(instance: ProductAttribute, validated_data: Dict): ProductAttribute
+
+54. OrderItemSerializer
+    + orderItemId: IntegerField
+    + orderId: IntegerField
+    + productId: IntegerField
+    + quantity: IntegerField
+    + unitPrice: DecimalField [max_digits=10, decimal_places=2]
+    + Meta:
+      * model: OrderItem
+      * fields: [orderItemId, orderId, productId, quantity, unitPrice]
+    + create(validated_data: Dict): OrderItem
+    + update(instance: OrderItem, validated_data: Dict): OrderItem
+
+55. ParentChildSerializer
+    + parentChildId: IntegerField
+    + userId: IntegerField
+    + childId: IntegerField
+    + Meta:
+      * model: ParentChild
+      * fields: [parentChildId, userId, childId]
+    + create(validated_data: Dict): ParentChild
+    + update(instance: ParentChild, validated_data: Dict): ParentChild
+-----------------------------------------------------------------------------------------
+56. RoleViewSet
+    + serializer_class: RoleSerializer
+    + queryset: QuerySet[Role]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
+
+57. UserViewSet
+    + serializer_class: UserSerializer
+    + queryset: QuerySet[User]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_permissions(): List[Permission]
+
+58. CategoryViewSet
+    + serializer_class: CategorySerializer
+    + queryset: QuerySet[Category]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
+
+59. BrandViewSet
+    + serializer_class: BrandSerializer
+    + queryset: QuerySet[Brand]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
+
+60. ProductViewSet
+    + serializer_class: ProductSerializer
+    + queryset: QuerySet[Product]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Product]
+
+61. AddressViewSet
+    + serializer_class: AddressSerializer
+    + queryset: QuerySet[Address]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Address]
+
+62. OrderViewSet
+    + serializer_class: OrderSerializer
+    + queryset: QuerySet[Order]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Order]
+
+63. ReviewViewSet
+    + serializer_class: ReviewSerializer
+    + queryset: QuerySet[Review]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Review]
++ perform_create(serializer: ReviewSerializer): Void
+
+64. WishlistViewSet
+    + serializer_class: WishlistSerializer
+    + queryset: QuerySet[Wishlist]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Wishlist]
+
+65. CartViewSet
+    + serializer_class: CartSerializer
+    + queryset: QuerySet[Cart]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[Cart]
+
+ADDITIONAL API CLASSES (Django REST Framework):
+
+64. ProductImageViewSet
+    + serializer_class: ProductImageSerializer
+    + queryset: QuerySet[ProductImage]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[ProductImage]
+
+65. ProductAttributeViewSet
+    + serializer_class: ProductAttributeSerializer
+    + queryset: QuerySet[ProductAttribute]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[ProductAttribute]
+
+66. OrderItemViewSet
+    + serializer_class: OrderItemSerializer
+    + queryset: QuerySet[OrderItem]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[OrderItem]
+
+67. ParentChildViewSet
+    + serializer_class: ParentChildSerializer
+    + queryset: QuerySet[ParentChild]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[ParentChild]
+
+68. AuditLogViewSet
+    + serializer_class: AuditLogSerializer
+    + queryset: QuerySet[AuditLog]
+    + permission_classes: List[Permission]
++ list(request: Request): Response
++ create(request: Request): Response
++ retrieve(request: Request, pk: Integer): Response
++ update(request: Request, pk: Integer): Response
++ destroy(request: Request, pk: Integer): Response
++ get_queryset(): QuerySet[AuditLog]
+
+FORM CLASSES:
+
+64. UserRegistrationForm
+    + firstName: CharField [max_length=100]
+    + lastName: CharField [max_length=100]
+    + email: EmailField [max_length=255]
+    - password: CharField [max_length=100]
+    - password_confirm: CharField [max_length=100]
+    + phone: CharField [max_length=11]
+    + birthDate: DateField
+    + Meta:
+      * model: User
+      * fields: [firstName, lastName, email, password, phone, birthDate]
++ clean_email(): String
++ clean_password_confirm(): String
++ save(commit: Boolean): User
+
+65. UserLoginForm
+    + email: EmailField [max_length=255]
+    - password: CharField [max_length=100]
++ clean(): Dict
+
+66. ProductSearchForm
+    + search_query: CharField
+    + category: ChoiceField
+    + brand: ChoiceField
+    + age_rating: ChoiceField
+    + price_min: DecimalField [max_digits=10, decimal_places=2]
+    + price_max: DecimalField [max_digits=10, decimal_places=2]
+    + sort_by: ChoiceField
++ clean(): Dict
++ get_search_results(): QuerySet[Product]
+
+67. OrderForm
+    + addressId: ChoiceField
+    + deliveryType: ChoiceField [max_length=20]
+    + paymentType: ChoiceField [max_length=20]
+    + note: CharField [max_length=100, nullable, blank]
++ clean(): Dict
++ save(user: User, cart_items: QuerySet[Cart]): Order
+
+68. ReviewForm
+    + rating: ChoiceField
+    + reviewText: CharField [nullable, blank]
++ clean(): Dict
++ save(user: User, product: Product): Review
+
+69. AddressForm
+    + city: CharField [max_length=100]
+    + street: CharField [max_length=100]
+    + house: CharField [max_length=50]
+    + flat: CharField [max_length=10, nullable, blank]
+    + index: CharField [max_length=6]
++ clean(): Dict
++ save(user: User): Address
+
+70. WishlistForm
+    + productId: ChoiceField
++ clean(): Dict
++ save(user: User): Wishlist
+
+ADDITIONAL FORM CLASSES:
+
+71. CategoryForm
+    + categoryName: CharField [max_length=100]
+    + categoryDescription: TextField
++ clean(): Dict
++ save(): Category
+
+72. BrandForm
+    + brandName: CharField [max_length=100]
+    + brandDescription: TextField
+    + brandCountry: CharField [max_length=100]
++ clean(): Dict
++ save(): Brand
+
+73. ProductForm
+    + productName: CharField [max_length=100]
+    + productDescription: TextField
+    + categoryId: ChoiceField
+    + brandId: ChoiceField
+    + price: DecimalField [max_digits=10, decimal_places=2]
+    + ageRating: IntegerField
+    + quantity: IntegerField
+    + weightKg: DecimalField [max_digits=10, decimal_places=2]
+    + dimensions: CharField [max_length=50]
++ clean(): Dict
++ save(): Product
+
+74. ProductImageForm
+    + productId: ChoiceField
+    + url: CharField [max_length=500]
+    + altText: CharField [max_length=100]
+    + isMain: BooleanField [default=False]
++ clean(): Dict
++ save(): ProductImage
+
+75. ProductAttributeForm
+    + productId: ChoiceField
+    + productAttributeName: CharField [max_length=100]
+    + productAttributeValue: CharField [max_length=100]
+    + productAttributeUnit: CharField [max_length=50, nullable, blank]
++ clean(): Dict
++ save(): ProductAttribute
+
+76. AddressManagementForm
+    + city: CharField [max_length=100]
+    + street: CharField [max_length=100]
+    + house: CharField [max_length=50]
+    + flat: CharField [max_length=10, nullable, blank]
+    + index: CharField [max_length=6]
++ clean(): Dict
++ save(user: User): Address
+
+77. OrderStatusForm
+    + orderStatusName: CharField [max_length=100]
++ clean(): Dict
++ save(): OrderStatus
+
+78. OrderItemForm
+    + orderId: ChoiceField
+    + productId: ChoiceField
+    + quantity: IntegerField
+    + unitPrice: DecimalField [max_digits=10, decimal_places=2]
++ clean(): Dict
++ save(): OrderItem
+
+79. ParentChildForm
+    + userId: ChoiceField
+    + childId: ChoiceField
++ clean(): Dict
++ save(): ParentChild
+
+80. AuditLogForm
+    + userId: ChoiceField
+    + action: CharField [max_length=100]
+    + tableName: CharField [max_length=100]
+    + recordId: IntegerField
+    + oldValues: JSONField [nullable, blank]
+    + newValues: JSONField [nullable, blank]
++ clean(): Dict
++ save(): AuditLog
+
+PERMISSION CLASSES:
+
+71. IsAdminOrReadOnly
+    + has_permission(request: Request, view: View): Boolean
+    + has_object_permission(request: Request, view: View, obj: Object): Boolean
+
+72. IsOwnerOrAdmin
+    + has_permission(request: Request, view: View): Boolean
+    + has_object_permission(request: Request, view: View, obj: Object): Boolean
+
+73. IsParentOrAdmin
+    + has_permission(request: Request, view: View): Boolean
+    + has_object_permission(request: Request, view: View, obj: Object): Boolean
+
+74. IsAuthenticatedUser
+    + has_permission(request: Request, view: View): Boolean
+    + has_object_permission(request: Request, view: View, obj: Object): Boolean
+
+ANALYTICS CLASSES [*UTILITY*]:
+
+75. SalesAnalytics [*UTILITY*]
+    + get_sales_data(start_date: DateTime, end_date: DateTime): Dict
+    + get_top_products(limit: Integer): QuerySet[Product]
+    + get_sales_by_category(): Dict
+    + generate_sales_report(format: String): File
+    + get_revenue_by_period(period: String): Dict
+    + get_order_statistics(): Dict
+
+76. ProductAnalytics [*UTILITY*]
+    + get_product_views(product_id: Integer): Integer
+    + get_product_ratings(product_id: Integer): Dict
+    + get_popular_products(limit: Integer): QuerySet[Product]
+    + generate_product_report(format: String): File
+    + get_inventory_turnover(): Dict
+    + get_product_performance(product_id: Integer): Dict
+
+78. ReportGenerator [*UTILITY*]
+    + generate_sales_report(start_date: DateTime, end_date: DateTime, format: String): File
+    + generate_inventory_report(format: String): File
+    + generate_user_report(format: String): File
+    + export_to_csv(data: Dict): File
+    + export_to_pdf(data: Dict): File
+    + generate_custom_report(data: Dict, format: String): File
+
+ADDITIONAL UTILITY CLASSES [*UTILITY*]:
+
+82. PaymentService [*UTILITY*]
+    + process_payment(order: Order, payment_data: Dict): Boolean
+    + refund_payment(transaction_id: String): Boolean
+    + verify_payment(transaction_id: String): Boolean
+    + get_payment_status(transaction_id: String): String
+    + create_payment_intent(amount: Decimal, currency: String): Dict
+
+83. SearchService [*UTILITY*]
+    + search_products(query: String): QuerySet[Product]
+    + search_by_category(category_id: Integer): QuerySet[Product]
+    + search_by_brand(brand_id: Integer): QuerySet[Product]
+    + advanced_search(filters: Dict): QuerySet[Product]
+    + autocomplete_search(query: String): List[String]
+
+84. RecommendationEngine [*UTILITY*]
+    + get_recommendations_for_user(user: User): QuerySet[Product]
+    + get_related_products(product: Product): QuerySet[Product]
+    + get_trending_products(): QuerySet[Product]
+    + update_user_preferences(user: User, preferences: Dict): Boolean
+    + get_personalized_recommendations(user: User): QuerySet[Product]
+
+85. AuditService [*UTILITY*]
+    + log_user_action(user: User, action: String, table: String, record_id: Integer, old_values: Dict, new_values: Dict): AuditLog
+    + get_user_audit_logs(user: User): QuerySet[AuditLog]
+    + get_table_audit_logs(table_name: String): QuerySet[AuditLog]
+    + generate_audit_report(start_date: DateTime, end_date: DateTime): File
+    + get_recent_activities(limit: Integer): QuerySet[AuditLog]
+
+86. BackupService [*UTILITY*]
+    + create_database_backup(): Boolean
+    + restore_database_backup(backup_file: File): Boolean
+    + schedule_backup(cron_expression: String): Boolean
+    + list_backups(): List[Backup]
+    + delete_backup(backup_id: Integer): Boolean
+    + verify_backup(backup_file: File): Boolean
+
+Legend:
++ Public fields/methods
+- Private fields/methods
+# Protected fields/methods
+[*UTILITY*] - Utility classes that provide supporting functionality
+
+These classes with their detailed fields, access modifiers, and methods provide a complete overview of the JoyBox Toy Store System architecture for creating a comprehensive class diagram.

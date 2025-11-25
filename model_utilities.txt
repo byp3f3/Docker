@@ -1,0 +1,201 @@
+Model Utilities for JoyBox Toy Store System
+Consolidated Utility Classes for Serializers, ViewSets, and Forms
+
+SERIALIZER UTILITY CLASS:
+
+1. ModelSerializerUtility
++ serialize_role(data: Dict): Dict
++ serialize_user(data: Dict): Dict
++ serialize_category(data: Dict): Dict
++ serialize_brand(data: Dict): Dict
++ serialize_product(data: Dict): Dict
++ serialize_product_image(data: Dict): Dict
++ serialize_product_attribute(data: Dict): Dict
++ serialize_address(data: Dict): Dict
++ serialize_order_status(data: Dict): Dict
++ serialize_order(data: Dict): Dict
++ serialize_order_item(data: Dict): Dict
++ serialize_review(data: Dict): Dict
++ serialize_wishlist(data: Dict): Dict
++ serialize_cart(data: Dict): Dict
++ serialize_parent_child(data: Dict): Dict
++ serialize_audit_log(data: Dict): Dict
++ deserialize_role(data: Dict): Role
++ deserialize_user(data: Dict): User
++ deserialize_category(data: Dict): Category
++ deserialize_brand(data: Dict): Brand
++ deserialize_product(data: Dict): Product
++ deserialize_product_image(data: Dict): ProductImage
++ deserialize_product_attribute(data: Dict): ProductAttribute
++ deserialize_address(data: Dict): Address
++ deserialize_order_status(data: Dict): OrderStatus
++ deserialize_order(data: Dict): Order
++ deserialize_order_item(data: Dict): OrderItem
++ deserialize_review(data: Dict): Review
++ deserialize_wishlist(data: Dict): Wishlist
++ deserialize_cart(data: Dict): Cart
++ deserialize_parent_child(data: Dict): ParentChild
++ deserialize_audit_log(data: Dict): AuditLog
++ validate_role_data(data: Dict): Boolean
++ validate_user_data(data: Dict): Boolean
++ validate_category_data(data: Dict): Boolean
++ validate_brand_data(data: Dict): Boolean
++ validate_product_data(data: Dict): Boolean
++ validate_product_image_data(data: Dict): Boolean
++ validate_product_attribute_data(data: Dict): Boolean
++ validate_address_data(data: Dict): Boolean
++ validate_order_status_data(data: Dict): Boolean
++ validate_order_data(data: Dict): Boolean
++ validate_order_item_data(data: Dict): Boolean
++ validate_review_data(data: Dict): Boolean
++ validate_wishlist_data(data: Dict): Boolean
++ validate_cart_data(data: Dict): Boolean
++ validate_parent_child_data(data: Dict): Boolean
++ validate_audit_log_data(data: Dict): Boolean
+
+VIEWSET UTILITY CLASS:
+
+2. ModelViewSetUtility
++ list_roles(request: Request): Response
++ create_role(request: Request): Response
++ retrieve_role(request: Request, pk: Integer): Response
++ update_role(request: Request, pk: Integer): Response
++ destroy_role(request: Request, pk: Integer): Response
++ list_users(request: Request): Response
++ create_user(request: Request): Response
++ retrieve_user(request: Request, pk: Integer): Response
++ update_user(request: Request, pk: Integer): Response
++ destroy_user(request: Request, pk: Integer): Response
++ list_categories(request: Request): Response
++ create_category(request: Request): Response
++ retrieve_category(request: Request, pk: Integer): Response
++ update_category(request: Request, pk: Integer): Response
++ destroy_category(request: Request, pk: Integer): Response
++ list_brands(request: Request): Response
++ create_brand(request: Request): Response
++ retrieve_brand(request: Request, pk: Integer): Response
++ update_brand(request: Request, pk: Integer): Response
++ destroy_brand(request: Request, pk: Integer): Response
++ list_products(request: Request): Response
++ create_product(request: Request): Response
++ retrieve_product(request: Request, pk: Integer): Response
++ update_product(request: Request, pk: Integer): Response
++ destroy_product(request: Request, pk: Integer): Response
++ list_product_images(request: Request): Response
++ create_product_image(request: Request): Response
++ retrieve_product_image(request: Request, pk: Integer): Response
++ update_product_image(request: Request, pk: Integer): Response
++ destroy_product_image(request: Request, pk: Integer): Response
++ list_product_attributes(request: Request): Response
++ create_product_attribute(request: Request): Response
++ retrieve_product_attribute(request: Request, pk: Integer): Response
++ update_product_attribute(request: Request, pk: Integer): Response
++ destroy_product_attribute(request: Request, pk: Integer): Response
++ list_addresses(request: Request): Response
++ create_address(request: Request): Response
++ retrieve_address(request: Request, pk: Integer): Response
++ update_address(request: Request, pk: Integer): Response
++ destroy_address(request: Request, pk: Integer): Response
++ list_order_statuses(request: Request): Response
++ create_order_status(request: Request): Response
++ retrieve_order_status(request: Request, pk: Integer): Response
++ update_order_status(request: Request, pk: Integer): Response
++ destroy_order_status(request: Request, pk: Integer): Response
++ list_orders(request: Request): Response
++ create_order(request: Request): Response
++ retrieve_order(request: Request, pk: Integer): Response
++ update_order(request: Request, pk: Integer): Response
++ destroy_order(request: Request, pk: Integer): Response
++ list_order_items(request: Request): Response
++ create_order_item(request: Request): Response
++ retrieve_order_item(request: Request, pk: Integer): Response
++ update_order_item(request: Request, pk: Integer): Response
++ destroy_order_item(request: Request, pk: Integer): Response
++ list_reviews(request: Request): Response
++ create_review(request: Request): Response
++ retrieve_review(request: Request, pk: Integer): Response
++ update_review(request: Request, pk: Integer): Response
++ destroy_review(request: Request, pk: Integer): Response
++ list_wishlists(request: Request): Response
++ create_wishlist(request: Request): Response
++ retrieve_wishlist(request: Request, pk: Integer): Response
++ update_wishlist(request: Request, pk: Integer): Response
++ destroy_wishlist(request: Request, pk: Integer): Response
++ list_carts(request: Request): Response
++ create_cart(request: Request): Response
++ retrieve_cart(request: Request, pk: Integer): Response
++ update_cart(request: Request, pk: Integer): Response
++ destroy_cart(request: Request, pk: Integer): Response
++ list_parent_child_relations(request: Request): Response
++ create_parent_child_relation(request: Request): Response
++ retrieve_parent_child_relation(request: Request, pk: Integer): Response
++ update_parent_child_relation(request: Request, pk: Integer): Response
++ destroy_parent_child_relation(request: Request, pk: Integer): Response
++ list_audit_logs(request: Request): Response
++ create_audit_log(request: Request): Response
++ retrieve_audit_log(request: Request, pk: Integer): Response
++ update_audit_log(request: Request, pk: Integer): Response
++ destroy_audit_log(request: Request, pk: Integer): Response
++ get_user_permissions(request: Request): List[Permission]
++ get_queryset_for_model(model_name: String): QuerySet
++ apply_filters_to_queryset(queryset: QuerySet, filters: Dict): QuerySet
++ paginate_results(results: List, page_size: Integer, page_number: Integer): Dict
++ handle_api_exception(exception: Exception): Response
+
+FORM UTILITY CLASS:
+
+3. ModelFormUtility
++ validate_user_registration_data(data: Dict): Dict
++ validate_user_login_data(data: Dict): Dict
++ validate_product_search_data(data: Dict): Dict
++ validate_order_data(data: Dict): Dict
++ validate_review_data(data: Dict): Dict
++ validate_address_data(data: Dict): Dict
++ validate_wishlist_data(data: Dict): Dict
++ validate_category_data(data: Dict): Dict
++ validate_brand_data(data: Dict): Dict
++ validate_product_data(data: Dict): Dict
++ validate_product_image_data(data: Dict): Dict
++ validate_product_attribute_data(data: Dict): Dict
++ validate_address_management_data(data: Dict): Dict
++ validate_order_status_data(data: Dict): Dict
++ validate_order_item_data(data: Dict): Dict
++ validate_parent_child_data(data: Dict): Dict
++ validate_audit_log_data(data: Dict): Dict
++ clean_user_registration_form(data: Dict): Dict
++ clean_user_login_form(data: Dict): Dict
++ clean_product_search_form(data: Dict): Dict
++ clean_order_form(data: Dict): Dict
++ clean_review_form(data: Dict): Dict
++ clean_address_form(data: Dict): Dict
++ clean_wishlist_form(data: Dict): Dict
++ clean_category_form(data: Dict): Dict
++ clean_brand_form(data: Dict): Dict
++ clean_product_form(data: Dict): Dict
++ clean_product_image_form(data: Dict): Dict
++ clean_product_attribute_form(data: Dict): Dict
++ clean_address_management_form(data: Dict): Dict
++ clean_order_status_form(data: Dict): Dict
++ clean_order_item_form(data: Dict): Dict
++ clean_parent_child_form(data: Dict): Dict
++ clean_audit_log_form(data: Dict): Dict
++ save_user_registration_form(data: Dict, commit: Boolean): User
++ save_order_form(data: Dict, user: User, cart_items: QuerySet[Cart]): Order
++ save_review_form(data: Dict, user: User, product: Product): Review
++ save_address_form(data: Dict, user: User): Address
++ save_wishlist_form(data: Dict, user: User): Wishlist
++ save_category_form(data: Dict): Category
++ save_brand_form(data: Dict): Brand
++ save_product_form(data: Dict): Product
++ save_product_image_form(data: Dict): ProductImage
++ save_product_attribute_form(data: Dict): ProductAttribute
++ save_address_management_form(data: Dict, user: User): Address
++ save_order_status_form(data: Dict): OrderStatus
++ save_order_item_form(data: Dict): OrderItem
++ save_parent_child_form(data: Dict): ParentChild
++ save_audit_log_form(data: Dict): AuditLog
++ get_form_choices_for_model(model_name: String): Dict
++ validate_form_data(form_type: String, data: Dict): Dict
++ handle_form_errors(errors: Dict): Dict
+
+These utility classes consolidate the functionality that was previously spread across separate Serializer, ViewSet, and Form classes for each model. Each utility class provides methods for handling all models in the system, reducing code duplication and improving maintainability.
