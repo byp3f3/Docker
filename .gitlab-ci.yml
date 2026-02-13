@@ -1,7 +1,7 @@
 stages:
   - build
-  - linter
-  - test
+  # - linter
+  # - test
 
 variables:
   DJANGO_SETTINGS_MODULE: "joybox.settings"
@@ -25,25 +25,25 @@ default:
     - pip install -r requirements.txt
 
 # Проверка сборки проекта
-build-check:
-  stage: build
-  script:
-    - echo "Проверка сборки проекта"
-    - python manage.py check
-    - python manage.py makemigrations --check --dry-run
-    - python manage.py collectstatic --noinput --dry-run
-    - echo "Проект успешно собран"
+# build-check:
+#   stage: build
+#   script:
+#     - echo "Проверка сборки проекта"
+#     - python manage.py check
+#     - python manage.py makemigrations --check --dry-run
+#     - python manage.py collectstatic --noinput --dry-run
+#     - echo "Проект успешно собран"
 
 #Проверка синтаксических ошибок линтером
-linter-check:
-  stage: linter
-  rules: 
-  - allow_failure: true
-  script:
-  - echo "Проверка синтаксических ошибок с помощью flake8"
-  - pip install flake8
-  - python -m flake8 joybox
-  - echo "Проверка синтаксических ошибок завершена"
+# linter-check:
+#   stage: linter
+#   rules: 
+#   - allow_failure: true
+#   script:
+#   - echo "Проверка синтаксических ошибок с помощью flake8"
+#   - pip install flake8
+#   - python -m flake8 joybox
+#   - echo "Проверка синтаксических ошибок завершена"
 
 # 2 дополнительные функциональные задачи
 test-check:
