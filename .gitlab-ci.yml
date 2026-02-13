@@ -49,8 +49,14 @@ linter-check:
 test-check:
   stage: test
   services:
-    - postgres:15
+    - name: postgres:15
+    - alias: postgres
   script:
     - echo "Запуск тестов"
+    - cat /etc/hosts
+    - ping -c 2 postgres || echo "Хост postgres не пингуется"
+    - getent hosts postgres || echo "Хост postgres не найден"
+    - pg_isready -h postgres -U postgres || echo "Postgres не отвечает"
+    - nc -zv postgres 5432 || echo "Порт 5432 недоступен"
     - python manage.py test core --verbosity=2
     - echo "Все тесты пройдены успешно"
