@@ -49,8 +49,7 @@ linter-check:
 test-check:
   stage: test
   services:
-    - name: postgres:15
-    - alias: postgres
+    - postgres:15
   script:
     - echo "Запуск тестов"
     - cat /etc/hosts
