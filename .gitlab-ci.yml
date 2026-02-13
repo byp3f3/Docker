@@ -40,6 +40,6 @@ test-staticfiles:
   stage: test
   before_script:
   script:
-    - echo "Проверка static файлов"
-    - python3 manage.py collectstatic --noinput --dry-run
-    - echo "Static файлы валидны"
+    - echo "Запуск тестов"
+    - python manage.py test core --verbosity=2
+    - echo "Все тесты пройдены успешно"
