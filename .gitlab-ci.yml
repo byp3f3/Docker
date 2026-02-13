@@ -1,7 +1,7 @@
 stages:
-  - build
+  # - build
   # - linter
-  # - test
+  - test
 
 variables:
   DJANGO_SETTINGS_MODULE: "joybox.settings"
