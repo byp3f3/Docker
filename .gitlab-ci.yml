@@ -41,6 +41,6 @@ safety-check:
   script:
     - echo "Запуск тестов"
     - pip install safety bandit
-    - safety check
+    - safety scan
     - bandit -r .
     - echo "Все тесты пройдены успешно"
