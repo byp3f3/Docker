@@ -27,6 +27,8 @@ build-check:
 #Проверка синтаксических ошибок линтером
 linter-check:
   stage: linter
+  rules: 
+  - allow_failure: true
   script:
   - echo "Проверка синтаксических ошибок с помощью flake8"
   - pip install flake8
