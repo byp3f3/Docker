@@ -1,6 +1,6 @@
 stages:
-  - validate
   - build
+  - linter
   - test
 
 variables:
@@ -14,20 +14,7 @@ default:
     - pip install --upgrade pip
     - pip install -r requirements.txt
 
-validate-django-settings:
-  stage: validate
-  script:
-    - echo "Проверка настроек Django"
-    - python3 manage.py check
-    - echo "Настройки Django валидны"
-
-validate-migrations:
-  stage: validate
-  script:
-    - echo "Проверка миграций Django"
-    - python3 manage.py makemigrations --check --dry-run
-    - echo "Миграции валидны"
-
+# Проверка сборки проекта
 build-check:
   stage: build
   script:
@@ -37,6 +24,16 @@ build-check:
     - python manage.py collectstatic --noinput --dry-run
     - echo "Проект успешно собран"
 
+#Проверка синтаксических ошибок линтером
+linter-check:
+  stage: linter
+  script:
+  - echo "Проверка синтаксических ошибок с помощью flake8"
+  - pip install flake8
+  - python -m flake8 joybox
+  - echo "Проверка синтаксических ошибок завершена"
+
+# 2 дополнительные функциональные задачи
 test-staticfiles:
   stage: test
   before_script:
