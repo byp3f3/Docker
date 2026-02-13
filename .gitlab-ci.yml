@@ -1,7 +1,7 @@
 stages:
   - build
   - linter
-  # - test
+  - test
 
 variables:
   DJANGO_SETTINGS_MODULE: "joybox.settings"
@@ -36,11 +36,11 @@ linter-check:
   - echo "Проверка синтаксических ошибок завершена"
 
 # 2 дополнительные функциональные задачи
-# safety-check:
-#   stage: test
-#   script:
-#     - echo "Запуск тестов"
-#     - pip install safety==2.3.5 bandit
-#     - safety check --full-report
-#     - bandit -r .
-#     - echo "Все тесты пройдены успешно"
+safety-check:
+  stage: test
+  script:
+    - echo "Запуск тестов"
+    - pip install safety==2.3.5 bandit
+    - safety check --full-report
+    - bandit -r .
+    - echo "Все тесты пройдены успешно"
