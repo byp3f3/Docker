@@ -40,6 +40,7 @@ safety-check:
   stage: test
   script:
     - echo "Запуск тестов"
-    - pip install safety
-    - safety scan -r requirements.txt
+    - pip install safety bandit
+    - safety check
+    - bandit -r .
     - echo "Все тесты пройдены успешно"
