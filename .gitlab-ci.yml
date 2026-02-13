@@ -1,7 +1,90 @@
+# stages:
+# #   # - build
+# #   # - linter
+#    - test
+
+# variables:
+#   DJANGO_SETTINGS_MODULE: "joybox.settings"
+#   VENV_PATH: ".venv"
+#   POSTGRES_DB: joybox
+#   POSTGRES_USER: postgres
+#   POSTGRES_PASSWORD: 124
+#   POSTGRES_HOST_AUTH_METHOD: trust
+#   DB_ENGINE: django.db.backends.postgresql
+#   DB_NAME: joybox
+#   DB_USER: postgres
+#   DB_PASSWORD: 124
+#   DB_HOST: postgres   
+#   DB_PORT: 5432
+
+# default:
+#   before_script:
+#     - python3 -m venv $VENV_PATH
+#     - source $VENV_PATH/bin/activate
+#     - pip install --upgrade pip
+#     - pip install -r requirements.txt
+
+# # # Проверка сборки проекта
+# # # build-check:
+# # #   stage: build
+# # #   script:
+# # #     - echo "Проверка сборки проекта"
+# # #     - python manage.py check
+# # #     - python manage.py makemigrations --check --dry-run
+# # #     - python manage.py collectstatic --noinput --dry-run
+# # #     - echo "Проект успешно собран"
+
+# # #Проверка синтаксических ошибок линтером
+# # # linter-check:
+# # #   stage: linter
+# # #   rules: 
+# # #   - allow_failure: true
+# # #   script:
+# # #   - echo "Проверка синтаксических ошибок с помощью flake8"
+# # #   - pip install flake8
+# # #   - python -m flake8 joybox
+# # #   - echo "Проверка синтаксических ошибок завершена"
+
+# # # 2 дополнительные функциональные задачи
+# # test-check:
+# #   stage: test
+# #   services:
+# #     - postgres:15
+# #   script:
+# #     - echo "Запуск тестов"
+# #     - cat /etc/hosts
+# #     - ping -c 2 postgres || echo "Хост postgres не пингуется"
+# #     - getent hosts postgres || echo "Хост postgres не найден"
+# #     - pg_isready -h postgres -U postgres || echo "Postgres не отвечает"
+# #     - nc -zv postgres 5432 || echo "Порт 5432 недоступен"
+# #     - python manage.py test core --verbosity=2
+# #     - echo "Все тесты пройдены успешно"
+
+# test-check:
+#   stage: test
+#   services:
+#     - name: postgres:15
+#       alias: postgres  # Явно указываем алиас
+#   variables:
+#     POSTGRES_DB: joybox
+#     POSTGRES_USER: postgres
+#     POSTGRES_PASSWORD: 124
+#     POSTGRES_HOST_AUTH_METHOD: trust
+#     POSTGRES_HOST: postgres  # Добавляем переменную для контейнера
+#   script:
+#     - echo "Запуск тестов"
+#     # Добавляем диагностику сети
+#     - cat /etc/hosts
+#     - nslookup postgres || echo "nslookup не установлен"
+#     - getent hosts postgres || echo "Хост postgres не найден"
+#     # Ждем готовности PostgreSQL
+#     - apt-get update && apt-get install -y postgresql-client || true
+#     - until pg_isready -h postgres -U postgres; do echo "Ждем PostgreSQL..."; sleep 2; done
+#     - python manage.py test core --verbosity=2
+
+
 stages:
-#   # - build
-#   # - linter
-   - test
+  - test
 
 variables:
   DJANGO_SETTINGS_MODULE: "joybox.settings"
@@ -24,60 +107,55 @@ default:
     - pip install --upgrade pip
     - pip install -r requirements.txt
 
-# # Проверка сборки проекта
-# # build-check:
-# #   stage: build
-# #   script:
-# #     - echo "Проверка сборки проекта"
-# #     - python manage.py check
-# #     - python manage.py makemigrations --check --dry-run
-# #     - python manage.py collectstatic --noinput --dry-run
-# #     - echo "Проект успешно собран"
-
-# #Проверка синтаксических ошибок линтером
-# # linter-check:
-# #   stage: linter
-# #   rules: 
-# #   - allow_failure: true
-# #   script:
-# #   - echo "Проверка синтаксических ошибок с помощью flake8"
-# #   - pip install flake8
-# #   - python -m flake8 joybox
-# #   - echo "Проверка синтаксических ошибок завершена"
-
-# # 2 дополнительные функциональные задачи
-# test-check:
-#   stage: test
-#   services:
-#     - postgres:15
-#   script:
-#     - echo "Запуск тестов"
-#     - cat /etc/hosts
-#     - ping -c 2 postgres || echo "Хост postgres не пингуется"
-#     - getent hosts postgres || echo "Хост postgres не найден"
-#     - pg_isready -h postgres -U postgres || echo "Postgres не отвечает"
-#     - nc -zv postgres 5432 || echo "Порт 5432 недоступен"
-#     - python manage.py test core --verbosity=2
-#     - echo "Все тесты пройдены успешно"
-
 test-check:
   stage: test
   services:
-    - name: postgres:15
-      alias: postgres  # Явно указываем алиас
+    - postgres:15
   variables:
     POSTGRES_DB: joybox
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: 124
     POSTGRES_HOST_AUTH_METHOD: trust
-    POSTGRES_HOST: postgres  # Добавляем переменную для контейнера
   script:
-    - echo "Запуск тестов"
-    # Добавляем диагностику сети
+    - echo "=== Запуск тестов ==="
+    
+    # Диагностика сети (без установки дополнительных пакетов)
+    - echo "=== Содержимое /etc/hosts ==="
     - cat /etc/hosts
-    - nslookup postgres || echo "nslookup не установлен"
-    - getent hosts postgres || echo "Хост postgres не найден"
-    # Ждем готовности PostgreSQL
-    - apt-get update && apt-get install -y postgresql-client || true
-    - until pg_isready -h postgres -U postgres; do echo "Ждем PostgreSQL..."; sleep 2; done
+    
+    - echo "=== Проверка доступности хоста postgres ==="
+    - getent hosts postgres || echo "Хост postgres не найден в /etc/hosts"
+    
+    # Проверка через Python (у вас уже есть Python с Django)
+    - echo "=== Проверка через Python ==="
+    - python -c "import socket; print('IP адрес postgres:', socket.gethostbyname('postgres'))" || echo "Не удалось получить IP"
+    
+    # Проверка подключения к PostgreSQL через Python
+    - echo "=== Проверка подключения к PostgreSQL ==="
+    - python -c "
+      import psycopg2
+      import time
+      import sys
+      for i in range(30):
+          try:
+              conn = psycopg2.connect(
+                  host='postgres',
+                  user='postgres',
+                  password='124',
+                  dbname='postgres',
+                  connect_timeout=2
+              )
+              conn.close()
+              print('PostgreSQL доступен!')
+              sys.exit(0)
+          except Exception as e:
+              print(f'Попытка {i+1}: PostgreSQL не готов - {e}')
+              time.sleep(2)
+      print('Не удалось подключиться к PostgreSQL')
+      sys.exit(1)
+      "
+    
+    - echo "=== Запуск тестов Django ==="
     - python manage.py test core --verbosity=2
+    
+    - echo "=== Все тесты пройдены успешно ==="
