@@ -40,7 +40,7 @@ safety-check:
   stage: check
   script:
     - echo "Проверка безопасности"
-    - pip install --upgrade setuptools
+    - pip install --user --upgrade setuptools
     - pip install safety==2.3.5 bandit
     - safety check --full-report
     - bandit -r .
