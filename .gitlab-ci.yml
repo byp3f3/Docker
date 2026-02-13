@@ -10,6 +10,12 @@ variables:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: 124
   POSTGRES_HOST_AUTH_METHOD: trust
+  DB_ENGINE: django.db.backends.postgresql
+  DB_NAME: joybox
+  DB_USER: postgres
+  DB_PASSWORD: 124
+  DB_HOST: postgres   
+  DB_PORT: 5432
 
 default:
   before_script:
