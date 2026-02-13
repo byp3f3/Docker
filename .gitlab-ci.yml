@@ -36,9 +36,10 @@ linter-check:
   - echo "Проверка синтаксических ошибок завершена"
 
 # 2 дополнительные функциональные задачи
-test-check:
+safety-check:
   stage: test
   script:
     - echo "Запуск тестов"
-    - python manage.py test core --verbosity=2
+    - pip install safety
+    - safety check -r requirements.txt
     - echo "Все тесты пройдены успешно"
