@@ -35,12 +35,21 @@ linter-check:
   - python -m flake8 joybox
   - echo "Проверка синтаксических ошибок завершена"
 
-# 2 дополнительные функциональные задачи
+# 2 дополнительные задачи
 safety-check:
   stage: test
   script:
-    - echo "Запуск тестов"
+    - echo "Проверка безопасности"
+    - pip install --upgrade setuptools
     - pip install safety==2.3.5 bandit
     - safety check --full-report
     - bandit -r .
-    - echo "Все тесты пройдены успешно"
+    - echo "Проверка безопасности пройдена успешно"
+
+dependencies-check:
+  stage: test
+  script:
+    - echo "Проверка зависимостей на актуальность"
+    - pip list --outdated
+    - pip check
+    - echo "Проверка зависимостей на актуальность пройдена успешно"
