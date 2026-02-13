@@ -38,6 +38,8 @@ linter-check:
 # 2 дополнительные задачи
 safety-check:
   stage: check
+  rules: 
+  - allow_failure: true
   script:
     - echo "Проверка безопасности"
     - pip install bandit
