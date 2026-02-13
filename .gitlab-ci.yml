@@ -6,6 +6,10 @@ stages:
 variables:
   DJANGO_SETTINGS_MODULE: "joybox.settings"
   VENV_PATH: ".venv"
+  POSTGRES_DB: joybox
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: 124
+  POSTGRES_HOST_AUTH_METHOD: trust
 
 default:
   before_script:
@@ -36,9 +40,10 @@ linter-check:
   - echo "Проверка синтаксических ошибок завершена"
 
 # 2 дополнительные функциональные задачи
-test-staticfiles:
+test-check:
   stage: test
-  before_script:
+  services:
+    - postgres:15
   script:
     - echo "Запуск тестов"
     - python manage.py test core --verbosity=2
