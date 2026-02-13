@@ -41,5 +41,5 @@ safety-check:
   script:
     - echo "Запуск тестов"
     - pip install safety
-    - safety check -r requirements.txt
+    - safety scan -r requirements.txt
     - echo "Все тесты пройдены успешно"
