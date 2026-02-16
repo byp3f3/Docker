@@ -1,0 +1,68 @@
+name: Django check
+
+on:
+  push:
+    branches: [ pipeline ]
+
+  # pull_request:
+
+jobs:
+  validate:
+    name: Validate Django project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with: 
+          python-version: '3.13'
+
+      - name: Create venv and install
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+        
+      - name: Check Django settings
+        run: |
+          echo "Проверка сборки проекта"
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+          python manage.py collectstatic --noinput --dry-run
+          echo "Проект успешно собран"
+
+      - name: Check Django migrations
+        run: |
+          echo "Проверка миграций Django"
+          python3 manage.py makemigrations --check --dry-run
+          echo "Миграции валидны"
+
+  linter:
+    name: Check Django project with flake8
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with: 
+          python-version: '3.13'
+
+      - name: Create venv and install
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check errors with flake8
+        run: |
+          echo "Проверка синтаксических ошибок с помощью flake8"
+          pip install flake8
+          python -m flake8 joybox
+          echo "Проверка синтаксических ошибок завершена"
