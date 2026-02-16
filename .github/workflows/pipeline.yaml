@@ -62,7 +62,7 @@ jobs:
           pip install flake8
           python -m flake8 joybox
           echo "Проверка синтаксических ошибок завершена"
-          continue-on-error: true
+        continue-on-error: true
 
   check: 
     name: Check Django project safety and dependencies
@@ -91,7 +91,8 @@ jobs:
           pip install bandit
           bandit -r .
           echo "Проверка безопасности пройдена успешно"
-          continue-on-error: true
+        continue-on-error: true
+        
       - name: Check project dependencies
         run: | 
           source .venv/bin/activate
