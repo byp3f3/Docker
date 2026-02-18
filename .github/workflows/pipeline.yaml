@@ -7,7 +7,7 @@ on:
   # pull_request:
 
 jobs:
-  build:
+  build: # Проверка сборки проекта
     name: Build Django project
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +35,7 @@ jobs:
           python manage.py collectstatic --noinput --dry-run
           echo "Проект успешно собран"
 
-  linter:
+  linter: # Проверка синтаксических ошибок линтером
     name: Check Django project with flake8
     runs-on: ubuntu-latest
     needs: build
@@ -64,7 +64,7 @@ jobs:
           echo "Проверка синтаксических ошибок завершена"
         continue-on-error: true
 
-  check: 
+  check: # 2 дополнительные задачи
     name: Check Django project safety and dependencies
     runs-on: ubuntu-latest
     needs: linter
